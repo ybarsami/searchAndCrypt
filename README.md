@@ -15,7 +15,7 @@ documents that contain all the words they have typed.
 
 *A simple example.*
 
-Let us start with a simple example, taken from "Managing Gigabytes"[^1]. For
+Let us start with a simple example, taken from "Managing Gigabytes"<sup>[1](#myfootnote1)</sup>. For
 now, we will omit the technical details which are part of the
 representation of an e-mail, and will just consider a set of documents to
 index. Table 1 shows a set of 6 documents that we want
@@ -70,5 +70,5 @@ and "days", the index tells us that those documents are the intersection
 between {1, 4} and {3, 6} which is the empty set. No document
 contains those 2 words.
 
-[^1]: I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
+<a name="myfootnote1">1</a>: I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
 
