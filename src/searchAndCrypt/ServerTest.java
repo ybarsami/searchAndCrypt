@@ -31,13 +31,7 @@ public class ServerTest extends Server {
     
     public final static String datasetsFolderName = "datasets";
     
-    public static enum MailSet {
-        MAILS_ENRON1("allen-p"),
-        MAILS_ENRON2("dasovich-j"),
-        TEXTS_FABLES("french", "Fables", datasetsFolderName + File.separatorChar +
-                "Fables"), // 240 fables
-        TEXTS_HUGO("french", "Hugo", datasetsFolderName + File.separatorChar +
-                "Hugo"); // 6 000 documents
+    public static class MailSet {
         
         private final String language;
         private final String name;
@@ -50,16 +44,18 @@ public class ServerTest extends Server {
             this.folderName = folderName;
         }
         MailSet(String user) {
-            this.language = "english";
-            this.name = "Enron_" + user;
-            this.folderName = datasetsFolderName + File.separatorChar +
-                user;
+            this("english", "Enron_" + user, datasetsFolderName + File.separatorChar + user);
         }
         
         public String getLanguage() { return language; }
         public String getName() { return name; }
         public String getFolderName() { return folderName; }
     }
+    
+    public static MailSet MAILS_TEST1 = new MailSet("allen-p");
+    public static MailSet MAILS_TEST2 = new MailSet("dasovich-j");
+    public static MailSet TEXTS_FABLES = new MailSet("french", "Fables", datasetsFolderName + File.separatorChar +
+            "Fables"); // 240 fables
     
     public static enum MailSort {
         FOLDER_NAMES, // Leave the sorting as it has been done by the folders created by the user.
@@ -106,14 +102,10 @@ public class ServerTest extends Server {
         nbIndexChunks = 0;
         maxIdIndexedMail = 0;
         
-        switch (mailsType) {
-            case TEXTS_FABLES:
-            case TEXTS_HUGO:
-                mailSort = MailSort.FOLDER_NAMES;
-                break;
-            default:
-                mailSort = MailSort.INTERLOCUTOR;
-                break;
+        if (mailsType.getName().equals("Fables")) {
+            mailSort = MailSort.FOLDER_NAMES;
+        } else {
+            mailSort = MailSort.INTERLOCUTOR;
         }
         
         loadMails(mailsType);
@@ -130,7 +122,7 @@ public class ServerTest extends Server {
     }
     
     public static final List<Server> getTestServers() {
-        MailSet[] mailsTypes = { MailSet.MAILS_ENRON1, MailSet.MAILS_ENRON2 };
+        MailSet[] mailsTypes = { MAILS_TEST1, MAILS_TEST2 };
 //        MailSet[] mailsTypes = { MailSet.TEXTS_FABLES };
         List<Server> serverList = new ArrayList<>();
         for (MailSet mailsType : mailsTypes) {

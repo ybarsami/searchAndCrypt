@@ -5,8 +5,9 @@
         <group>
             <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/SearchAndCrypt.java</file>
             <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/ServerTest.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/MimeParse.java</file>
             <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/ServerBible.java</file>
+            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/ServerYann.java</file>
+            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/ServerEnron.java</file>
         </group>
     </open-files>
 </project-private>
