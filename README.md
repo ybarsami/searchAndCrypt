@@ -145,46 +145,46 @@ contains those 2 words.
 ## The dependencies ##
 
 * the Apache Commons Primitives [[15]](#note15) library for the `ArrayIntList`
-Java class. This class uses *32 x N* bits of memory for a list of *N* integers
-instead of *128 x N* bits when using `ArrayList<Integer>`. Since those lists
-are the most memory-consuming of our library, gaining a factor of 4 is
-significant. However, the gains are only useful if one wants to index a set of
-documents the fastest way possible --- by setting `nbMailsBeforeSave` (in
-MimeParse.java) to a maximum possible value, the whole index will always be in
-main memory, instead of being output in files from time to time. When setting
-`nbMailsBeforeSave` to a more robust number (that allows to continue a
-non-finished indexing instead of having to rebuild it from scratch, *e.g.*,
-256), one can then change all the `ArrayIntList` to `ArrayList<Integer>`
-without any memory concern.
-
-N.B.: The ArrayIntList Java class can be easily rewritten if needed. It is thus
-possible to avoid this dependency.
+  Java class. This class uses *32 x N* bits of memory for a list of *N*
+  integers instead of *128 x N* bits when using `ArrayList<Integer>`. Since
+  those lists are the most memory-consuming of our library, gaining a factor of
+  4 is significant. However, the gains are only useful if one wants to index a
+  set of documents the fastest way possible --- by setting `nbMailsBeforeSave`
+  (in MimeParse.java) to a maximum possible value, the whole index will always
+  be in main memory, instead of being output in files from time to time. When
+  setting `nbMailsBeforeSave` to a more robust number (that allows to continue
+  a non-finished indexing instead of having to rebuild it from scratch, *e.g.*,
+  256), one can then change all the `ArrayIntList` to `ArrayList<Integer>`
+  without any memory concern.
+  
+  N.B.: The ArrayIntList Java class can be easily rewritten if needed. It is
+  thus possible to avoid this dependency.
 
 * the Apache JAMES Mime4j [[16]](#note16) library for the parsing of e-mails
-in the MIME format.
-
-N.B.: Parsing MIME messages is absolutely needed for the library. It would take
-way too much time to reimplement a MIME parser, but parsers other than the
-Apache JAMES Mime4j exist, *e.g.*, JavaMail
-(https://javaee.github.io/javamail/).
+  in the MIME format.
+  
+  N.B.: Parsing MIME messages is absolutely needed for the library. It would
+  take way too much time to reimplement a MIME parser, but parsers other than
+  the Apache JAMES Mime4j exist, *e.g.*, JavaMail
+  (https://javaee.github.io/javamail/).
 
 * jsoup [[17]](#note17) library for the parsing of HTML portions of e-mails.
-
-N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
-HTML markups. Because we only use the function text() which extracts the text
-from a HTML document, this function can be rewritten if needed.
+  
+  N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
+  HTML markups. Because we only use the function text() which extracts the text
+  from a HTML document, this function can be rewritten if needed.
 
 * the Snowball library [[18]](#note18) for stemming.
-
-N.B.: Stemming is more than welcome, in the sense that it is practically
-impossible for a user to know whether they have to search for, *e.g.*,
-"computer" or "computers", when they perform a textual search. Getting rid of a
-stemmer would increase a little bit the size of the index, but would primarily
-render the searches less efficient for the user. The Porter algorithm for
-stemming is also used by Apache Lucene, but it is possible to use other stemming
-algorithms, *e.g.*, the one by J. Savoy
-(http://members.unine.ch/jacques.savoy/clef/) or the one of Paice/Husk
-(http://alx2002.free.fr/utilitarism/stemmer/stemmer_fr.html).
+  
+  N.B.: Stemming is more than welcome, in the sense that it is practically
+  impossible for a user to know whether they have to search for, *e.g.*,
+  "computer" or "computers", when they perform a textual search. Getting rid of
+  a stemmer would increase a little bit the size of the index, but would
+  primarily render the searches less efficient for the user. The Porter
+  algorithm for stemming is also used by Apache Lucene, but it is possible to
+  use other stemming algorithms, *e.g.*, the one by J. Savoy
+  (http://members.unine.ch/jacques.savoy/clef/) or the one of Paice/Husk
+  (http://alx2002.free.fr/utilitarism/stemmer/stemmer_fr.html).
 
 
 ## Building the inverted index: choices made in this library ##
@@ -203,21 +203,21 @@ thus use an inverted index: we will see that we can do much better than 30%
 different if:
 
 * the index was not stored encrypted (then, we could ask the server to perform
-searches for us and would just need to send via the network the set of answers).
-Encryption is mandatory to ensure privacy.
+  searches for us and would just need to send via the network the set of
+  answers). Encryption is mandatory to ensure privacy.
 
 * the index could be stored locally on the client side (then, we could perform
-all the updates and searches without having to worry about network bandwidth).
-Take into consideration that the webmail engine can be used throughout
-different devices. A possible solution to partially overcome the network
-bandwidth issue while still enabling different devices is to store the index in
-two parts: the full index at a given timestamp (still heavy to download and/or
-upload) + a dynamic index which stores the differences from the full index, at
-present time. The full index is then updated periodically (*e.g.*, once per
-week), and thus can be downloaded just once per device per week ; only the
-dynamic index will be downloaded and uploaded every time we modify it. This is
-a viable solution if we use a mobile application, and if we use a webmail with
-HTML5.
+  all the updates and searches without having to worry about network
+  bandwidth). Take into consideration that the webmail engine can be used
+  throughout different devices. A possible solution to partially overcome the
+  network bandwidth issue while still enabling different devices is to store
+  the index in two parts: the full index at a given timestamp (still heavy to
+  download and/or upload) + a dynamic index which stores the differences from
+  the full index, at present time. The full index is then updated periodically
+  (*e.g.*, once per week), and thus can be downloaded just once per device per
+  week; only the dynamic index will be downloaded and uploaded every time we
+  modify it. This is a viable solution if we use a mobile application, and if
+  we use a webmail with HTML5.
 
 ### How can we compress this inverted index? ###
 
@@ -225,6 +225,7 @@ A first point of comparison for the size of the inverted index is the size
 claimed by Lucene:
 
 > index size roughly 20-30% the size of text indexed
+> 
 > https://lucene.apache.org/core/
 
 However, a typical e-mail user is expected to have a lot of e-mails, and in
@@ -239,30 +240,30 @@ size of the index by reducing the number of words that appear in the index, and
 will then see how to compress the inverted lists.
 
 * A first approach is to normalize the words. A usual way to do this in
-English-only texts is to convert all uppercase letters to their lowercase
-equivalents. This transformation is known as case-folding, and is useful
-because it will reduce the index size (if a document contains both "The"
-and "the", the index now contains only one entry instead of two) while
-improving most of the searching facilities (we do not want to search "Cat"
-or "cat" to find all e-mails where we discussed about cats). The only downsize
-of this method is that, sometimes, we would have liked to know if the word was
-in uppercase or not (*e.g.*, to distinguish "the Bell prize" from "the bell
-rang", or to distinguish "a MIME message" from "a mime artist", etc.). In our
-library, we also remove all accents from letters ("félicité" becomes
-"felicite"), and split the Unicode characters which contain two letters into
-two ASCII letters ("tous mes vœux" becomes "tous mes voeux"). This is useful
-for the same reason than before, and because accents and special characters are
-frequently forgotten in e-mails.
+  English-only texts is to convert all uppercase letters to their lowercase
+  equivalents. This transformation is known as case-folding, and is useful
+  because it will reduce the index size (if a document contains both "The"
+  and "the", the index now contains only one entry instead of two) while
+  improving most of the searching facilities (we do not want to search "Cat"
+  or "cat" to find all e-mails where we discussed about cats). The only
+  downsize of this method is that, sometimes, we would have liked to know if
+  the word was in uppercase or not (*e.g.*, to distinguish "the Bell prize"
+  from "the bell rang", or to distinguish "a MIME message" from "a mime
+  artist", etc.). In our library, we also remove all accents from letters
+  ("félicité" becomes "felicite"), and split the Unicode characters which
+  contain two letters into two ASCII letters ("tous mes vœux" becomes "tous mes
+  voeux"). This is useful for the same reason than before, and because accents
+  and special characters are frequently forgotten in e-mails.
 
 * A second approach is to perform stemming. This transformation reduces each
-word to its morphological root --- *i.e.*, it removes all suffixes and/or
-modifiers. For example, compression, compressed, and compressor all have the
-word compress as their common root.
+  word to its morphological root --- *i.e.*, it removes all suffixes and/or
+  modifiers. For example, compression, compressed, and compressor all have the
+  word compress as their common root.
 
 * A last approach is to remove frequent words from the index, to save space.
-However, choosing the list of stop-words is hard, and the gains are not that
-good, because frequent words have an inverted list which can be greatly
-compressed.
+  However, choosing the list of stop-words is hard, and the gains are not that
+  good, because frequent words have an inverted list which can be greatly
+  compressed.
 
 The previous methods all reduced the size of the index by authorizing a little
 loss in the indexed terms. We will now see methods that compress without losing
