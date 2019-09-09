@@ -285,7 +285,7 @@ is the compression method.
 <a name="table3">Table 3</a>: Compression of inverted files in bits per pointer.
 
 | Method                                           | Bible  | GNUbib | Comact | TREC    |
-|--------------------------------------------------|-------:|-------:|--------|--------:|
+|--------------------------------------------------|-------:|-------:|-------:|--------:|
 | *Global methods*                                 |        |        |        |         |
 | Unary                                            | 262.00 | 909.00 | 487.00 | 1918.00 |
 | Binary                                           |  15.00 |  16.00 |  18.00 |   20.00 |
