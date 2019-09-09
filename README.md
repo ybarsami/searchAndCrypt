@@ -144,33 +144,38 @@ contains those 2 words.
 
 ## The dependencies ##
 
-* the Apache Commons Primitives [[15]](#note15) library for the ArrayIntList
+* the Apache Commons Primitives [[15]](#note15) library for the `ArrayIntList`
 Java class. This class uses *32 x N* bits of memory for a list of *N* integers
-instead of *128 x N* bits when using ArrayList<Integer>. Since those lists are
-the most memory-consuming of our library, gaining a factor of 4 is significant.
-However, the gains are only useful if one wants to index a set of documents the
-fastest way possible --- by setting nbMailsBeforeSave (in MimeParse.java) to a
-maximum possible value, the whole index will always be in main memory, instead
-of being output in files from time to time. When setting nbMailsBeforeSave to a
-more robust number (that allows to continue a non-finished indexing instead of
-having to rebuild it from scratch), one can then change all the ArrayIntList to
-ArrayList<Integer> without any memory concern.
+instead of *128 x N* bits when using `ArrayList<Integer>`. Since those lists
+are the most memory-consuming of our library, gaining a factor of 4 is
+significant. However, the gains are only useful if one wants to index a set of
+documents the fastest way possible --- by setting `nbMailsBeforeSave` (in
+MimeParse.java) to a maximum possible value, the whole index will always be in
+main memory, instead of being output in files from time to time. When setting
+`nbMailsBeforeSave` to a more robust number (that allows to continue a
+non-finished indexing instead of having to rebuild it from scratch, *e.g.*,
+256), one can then change all the `ArrayIntList` to `ArrayList<Integer>`
+without any memory concern.
+
 N.B.: The ArrayIntList Java class can be easily rewritten if needed. It is thus
 possible to avoid this dependency.
 
 * the Apache JAMES Mime4j [[16]](#note16) library for the parsing of e-mails
 in the MIME format.
+
 N.B.: Parsing MIME messages is absolutely needed for the library. It would take
 way too much time to reimplement a MIME parser, but parsers other than the
 Apache JAMES Mime4j exist, *e.g.*, JavaMail
 (https://javaee.github.io/javamail/).
 
 * jsoup [[17]](#note17) library for the parsing of HTML portions of e-mails.
+
 N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
 HTML markups. Because we only use the function text() which extracts the text
 from a HTML document, this function can be rewritten if needed.
 
 * the Snowball library [[18]](#note18) for stemming.
+
 N.B.: Stemming is more than welcome, in the sense that it is practically
 impossible for a user to know whether they have to search for, *e.g.*,
 "computer" or "computers", when they perform a textual search. Getting rid of a
@@ -217,8 +222,10 @@ HTML5.
 ### How can we compress this inverted index? ###
 
 A first point of comparison for the size of the inverted index is the size
-claimed by Lucene: "index size roughly 20-30% the size of text indexed"
-(https://lucene.apache.org/core/).
+claimed by Lucene:
+
+> index size roughly 20-30% the size of text indexed
+> https://lucene.apache.org/core/
 
 However, a typical e-mail user is expected to have a lot of e-mails, and in
 that case, handling an index which is 20% the size of the e-mails is too much.
