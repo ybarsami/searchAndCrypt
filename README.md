@@ -5,7 +5,7 @@ This library is distributed with the GNU general public license version 3,
 see the details in the file named "LICENSE".
 
 
-### Purpose of this library ###
+## Purpose of this library ##
 
 The main goal of this library is to enable searching functionalities inside a
 set of encrypted e-mails, stored on a distant server. To this end, we rely on
@@ -27,7 +27,7 @@ used to perform these functionalities in an encrypted and client-server
 environment.
 
 
-### Run ###
+## Run ##
 
 The java files have been compiled to a .jar executable file located in:
 
@@ -44,7 +44,7 @@ possible to launch the test examples by copying the datasets folder in the
 folder in which we want to perform the tests.
 
 
-### Build ###
+## Build ##
 
 The library has been written with the Netbeans I.D.E., and all the files
 associated to the Netbeans project are contained in this repository. The
@@ -52,24 +52,24 @@ easiest method is thus to open this Netbeans project and build it, if
 necessary.
 
 
-### Content of this repository ###
+## Content of this repository ##
 
 **build:** the files generated when building this library.
 
 **datasets:** contains 5 sets of documents that can be used to test the
 library:
 
-* Bible: the King James' Bible[[2]](#note2) --- which is a dataset of choice
+* Bible: the King James' Bible [[2]](#note2) --- which is a dataset of choice
 because it has been used a lot of times in previous works. This dataset
 contains 31102 verses, and is split into different document at run-time.
 
 * allen-p and dasovich-j: two e-mail boxes taken from the Enron corpus of
-e-mails[[9]](#note9), which contains professional e-mail boxes of 150
+e-mails [[9]](#note9), which contains professional e-mail boxes of 150
 persons. We cleaned the original folders by removing the e-mails which were
 there multiple times, as suggested in the article. The allen-p dataset contains
 1410 e-mails and the dasovich-j dataset contains 15748 e-mails.
 
-* Fables: the Fables written by Jean de La Fontaine[[1]](#note1). This folder
+* Fables: the Fables written by Jean de La Fontaine [[1]](#note1). This folder
 contains 240 files, each containing a different fable.
 
 * Hugo: 10 books written by Victor Hugo. This dataset is split at run-time into
@@ -85,7 +85,7 @@ containing the libraries on which this one depends.
 **src:** the source files of this library.
 
 
-### The inverted index: a simple example ###
+## The inverted index: a simple example ##
 
 Let us start with a simple example, taken from "Managing Gigabytes"
 [[3]](#note3). For now, we will omit the technical details which are part of
@@ -142,9 +142,9 @@ between {1, 4} and {3, 6} which is the empty set. No document
 contains those 2 words.
 
 
-### The dependencies ###
+## The dependencies ##
 
-* the Apache Commons Primitives[[15]](#note15) library for the ArrayIntList
+* the Apache Commons Primitives [[15]](#note15) library for the ArrayIntList
 Java class. This class uses *32 x N* bits of memory for a list of *N* integers
 instead of *128 x N* bits when using ArrayList<Integer>. Since those lists are
 the most memory-consuming of our library, gaining a factor of 4 is significant.
@@ -158,33 +158,33 @@ ArrayList<Integer> without any memory concern.
 N.B.: The ArrayIntList Java class can be easily rewritten if needed. It is thus
 possible to avoid this dependency.
 
-* the Apache JAMES Mime4j[[16]](#note16) library for the parsing of e-mails
+* the Apache JAMES Mime4j [[16]](#note16) library for the parsing of e-mails
 in the MIME format.
 N.B.: Parsing MIME messages is absolutely needed for the library. It would take
 way too much time to reimplement a MIME parser, but parsers other than the
 Apache JAMES Mime4j exist, *e.g.*, JavaMail
 (https://javaee.github.io/javamail/).
 
-* jsoup[[17]](#note17) library for the parsing of HTML portions of e-mails.
+* jsoup [[17]](#note17) library for the parsing of HTML portions of e-mails.
 N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
 HTML markups. Because we only use the function text() which extracts the text
 from a HTML document, this function can be rewritten if needed.
 
-* the Snowball library[[18]](#note18) for stemming.
+* the Snowball library [[18]](#note18) for stemming.
 N.B.: Stemming is more than welcome, in the sense that it is practically
 impossible for a user to know whether they have to search for, *e.g.*,
 "computer" or "computers", when they perform a textual search. Getting rid of a
 stemmer would increase a little bit the size of the index, but would primarily
 render the searches less efficient for the user. The Porter algorithm for
 stemming is also used by Apache Lucene, but it is possible to use other stemming
-algorithms, *e.g.*, the one by J.~Savoy
+algorithms, *e.g.*, the one by J. Savoy
 (http://members.unine.ch/jacques.savoy/clef/) or the one of Paice/Husk
 (http://alx2002.free.fr/utilitarism/stemmer/stemmer_fr.html).
 
 
-### Building the inverted index: choices made in this library ###
+## Building the inverted index: choices made in this library ##
 
-## Why an inverted index? ##
+### Why an inverted index? ###
 
 We choose to use an inverted index to index the e-mails. Other data structures
 exist that allow more search features but that are more memory-consuming,
@@ -214,7 +214,7 @@ dynamic index will be downloaded and uploaded every time we modify it. This is
 a viable solution if we use a mobile application, and if we use a webmail with
 HTML5.
 
-## How can we compress this inverted index? ##
+### How can we compress this inverted index? ###
 
 A first point of comparison for the size of the inverted index is the size
 claimed by Lucene: "index size roughly 20-30% the size of text indexed"
@@ -284,21 +284,21 @@ is the compression method.
 
 <a name="table3">Table 3</a>: Compression of inverted files in bits per pointer.
 
-| Method                                         | Bible  | GNUbib | Comact | TREC    |
-|------------------------------------------------|-------:|-------:|--------|--------:|
-| *Global methods*                               |        |        |        |         |
-| Unary                                          | 262.00 | 909.00 | 487.00 | 1918.00 |
-| Binary                                         |  15.00 |  16.00 |  18.00 |   20.00 |
-| Bernoulli[[8]](#note8)[[7]](#note7)            |   9.86 |  11.06 |  10.90 |   12.30 |
-| gamma[[6]](#note6)[[4]](#note4)                |   6.51 |   5.68 |   4.48 |    6.63 |
-| delta[[6]](#note6)[[4]](#note4)                |   6.23 |   5.08 |   4.35 |    6.38 |
-| Observed frequency                             |   5.90 |   4.82 |   4.20 |    5.97 |
-| *Local methods*                                |        |        |        |         |
-| Bernoulli[[14]](#note14)[[5]](#note5)          |   6.09 |   6.16 |   5.40 |    5.84 |
-| Hyperbolic[[12]](#note12)                      |   5.75 |   5.16 |   4.65 |    5.89 |
-| Skewed Bernoulli[[13]](#note13)[[11]](#note11) |   5.65 |   4.70 |   4.20 |    5.44 |
-| Batched frequency[[11]](#note11)               |   5.58 |   4.64 |   4.02 |    5.41 |
-| Interpolative[[10]](#note10)                   |   5.24 |   3.98 |   3.87 |    5.18 |
+| Method                                           | Bible  | GNUbib | Comact | TREC    |
+|--------------------------------------------------|-------:|-------:|--------|--------:|
+| *Global methods*                                 |        |        |        |         |
+| Unary                                            | 262.00 | 909.00 | 487.00 | 1918.00 |
+| Binary                                           |  15.00 |  16.00 |  18.00 |   20.00 |
+| Bernoulli [[8]](#note8) [[7]](#note7)            |   9.86 |  11.06 |  10.90 |   12.30 |
+| gamma [[6]](#note6) [[4]](#note4)                |   6.51 |   5.68 |   4.48 |    6.63 |
+| delta [[6]](#note6) [[4]](#note4)                |   6.23 |   5.08 |   4.35 |    6.38 |
+| Observed frequency                               |   5.90 |   4.82 |   4.20 |    5.97 |
+| *Local methods*                                  |        |        |        |         |
+| Bernoulli [[14]](#note14) [[5]](#note5)          |   6.09 |   6.16 |   5.40 |    5.84 |
+| Hyperbolic [[12]](#note12)                       |   5.75 |   5.16 |   4.65 |    5.89 |
+| Skewed Bernoulli [[13]](#note13) [[11]](#note11) |   5.65 |   4.70 |   4.20 |    5.44 |
+| Batched frequency [[11]](#note11)                |   5.58 |   4.64 |   4.02 |    5.41 |
+| Interpolative [[10]](#note10)                    |   5.24 |   3.98 |   3.87 |    5.18 |
 
 
 
