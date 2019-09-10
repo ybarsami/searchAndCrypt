@@ -171,8 +171,8 @@ contains those 2 words.
 * jsoup [[17]](#note17) library for the parsing of HTML portions of e-mails.
   
   N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
-  HTML markups. Because we only use the function text() which extracts the text
-  from a HTML document, this function can be rewritten if needed.
+  HTML markups. Because we only use the function `text()` which extracts the
+  text from a HTML document, this function can be rewritten if needed.
 
 * the Snowball library [[18]](#note18) for stemming.
   
@@ -314,43 +314,43 @@ is the compression method.
 
 ## Books ##
 
-<a name="note1">1</a>: La Fontaine, J. de. "Fables". 1694. https://www.gutenberg.org/files/56327/56327-0.txt
+<a name="note1">\[1\]</a> La Fontaine, J. de. "Fables". 1694. https://www.gutenberg.org/files/56327/56327-0.txt
 
-<a name="note2">2</a>: Various. "Bible" (English translation). http://www.gutenberg.org/cache/epub/30/pg30.txt
+<a name="note2">\[2\]</a> Various. "Bible" (English translation). http://www.gutenberg.org/cache/epub/30/pg30.txt
 
-<a name="note3">3</a>: I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
+<a name="note3">\[3\]</a> I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
 
 ## Articles ##
 
-<a name="note4">4</a>: J. L. Bentley and A. C.-C. Yao. “An almost optimal algorithm for unbounded searching”. Information Processing Letters 5.3 (1976), pp. 82–87. http://dx.doi.org/10.1016/0020-0190(76)90071-5
+<a name="note4">\[4\]</a> J. L. Bentley and A. C.-C. Yao. “An almost optimal algorithm for unbounded searching”. Information Processing Letters 5.3 (1976), pp. 82–87. http://dx.doi.org/10.1016/0020-0190(76)90071-5
 
-<a name="note5">5</a>: A. Bookstein, S. T. Klein, and T. Raita. “Model based concordance compression”. Proceedings of the 2nd Data Compression Conference (DCC). 1992. http://dx.doi.org/10.1109/DCC.1992.227473
+<a name="note5">\[5\]</a> A. Bookstein, S. T. Klein, and T. Raita. “Model based concordance compression”. Proceedings of the 2nd Data Compression Conference (DCC). 1992. http://dx.doi.org/10.1109/DCC.1992.227473
 
-<a name="note6">6</a>: P. Elias. “Universal Codeword Sets and Representations of the Integers”. IEEE Transactions on Information Theory 21.2 (1975), pp. 194–203. http://dx.doi.org/10.1109/TIT.1975.1055349
+<a name="note6">\[6\]</a> P. Elias. “Universal Codeword Sets and Representations of the Integers”. IEEE Transactions on Information Theory 21.2 (1975), pp. 194–203. http://dx.doi.org/10.1109/TIT.1975.1055349
 
-<a name="note7">7</a>: R. Gallager and D. van Voorhis. “Optimal source codes for geometrically distributed integer alphabets (Correspondence)”. IEEE Transactions on Information Theory 21.2 (1975), pp. 228–230. http://dx.doi.org/10.1109/TIT.1975.1055357
+<a name="note7">\[7\]</a> R. Gallager and D. van Voorhis. “Optimal source codes for geometrically distributed integer alphabets (Correspondence)”. IEEE Transactions on Information Theory 21.2 (1975), pp. 228–230. http://dx.doi.org/10.1109/TIT.1975.1055357
 
-<a name="note8">8</a>: S. Golomb. “Run-length Encodings (Correspondence)”. IEEE Transactions on Information Theory 12.3 (1966), pp. 399–401. http://dx.doi.org/10.1109/TIT.1966.1053907
+<a name="note8">\[8\]</a> S. Golomb. “Run-length Encodings (Correspondence)”. IEEE Transactions on Information Theory 12.3 (1966), pp. 399–401. http://dx.doi.org/10.1109/TIT.1966.1053907
 
-<a name="note9">9</a>: B. Klimt and Y. Yang. "The Enron Corpus: A New Dataset for Email Classification Research". Proceedings of the 15th European Conference on Machine Learning (ECML). Springer Berlin Heidelberg, 2004. http://dx.doi.org/10.1007/978-3-540-30115-8_22
+<a name="note9">\[9\]</a> B. Klimt and Y. Yang. "The Enron Corpus: A New Dataset for Email Classification Research". Proceedings of the 15th European Conference on Machine Learning (ECML). Springer Berlin Heidelberg, 2004. http://dx.doi.org/10.1007/978-3-540-30115-8_22
 
-<a name="note10">10</a>: A. Moffat and L. Stuiver. “Exploiting clustering in inverted file compression”. Proceedings of the 6th Data Compression Conference (DCC). 1996, pp. 82–91. http://dx.doi.org/10.1109/DCC.1996.488313
+<a name="note10">\[10\]</a> A. Moffat and L. Stuiver. “Exploiting clustering in inverted file compression”. Proceedings of the 6th Data Compression Conference (DCC). 1996, pp. 82–91. http://dx.doi.org/10.1109/DCC.1996.488313
 
-<a name="note11">11</a>: A. Moffat and J. Zobel. “Parameterised Compression for Sparse Bitmaps”. Proceedings of the 15th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 1992, pp. 274–285. http://dx.doi.org/10.1145/133160.133210
+<a name="note11">\[11\]</a> A. Moffat and J. Zobel. “Parameterised Compression for Sparse Bitmaps”. Proceedings of the 15th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 1992, pp. 274–285. http://dx.doi.org/10.1145/133160.133210
 
-<a name="note12">12</a>: E. J. Schuegraf. “Compression of large inverted files with hyperbolic term distribution”. Information Processing & Management 12.6 (1976), pp. 377–384. http://dx.doi.org/10.1016/0306-4573(76)90035-2
+<a name="note12">\[12\]</a> E. J. Schuegraf. “Compression of large inverted files with hyperbolic term distribution”. Information Processing & Management 12.6 (1976), pp. 377–384. http://dx.doi.org/10.1016/0306-4573(76)90035-2
 
-<a name="note13">13</a>: J. Teuhola. “A compression method for clustered bit-vectors”. Information Processing Letters 7.6 (1978), pp. 308–311. http://dx.doi.org/10.1016/0020-0190(78)90024-8
+<a name="note13">\[13\]</a> J. Teuhola. “A compression method for clustered bit-vectors”. Information Processing Letters 7.6 (1978), pp. 308–311. http://dx.doi.org/10.1016/0020-0190(78)90024-8
 
-<a name="note14">14</a>: I. H. Witten, T. C. Bell, and C. G. Nevill. “Indexing and compressing full-text databases for CD-ROM”. Journal of Information Science 17.5 (1991), pp. 265–271. http://dx.doi.org/10.1177/016555159101700502
+<a name="note14">\[14\]</a> I. H. Witten, T. C. Bell, and C. G. Nevill. “Indexing and compressing full-text databases for CD-ROM”. Journal of Information Science 17.5 (1991), pp. 265–271. http://dx.doi.org/10.1177/016555159101700502
 
 ## Tools ##
 
-<a name="note15">15</a>: The Apache Software Foundation. Apache Commons Primitives. 2003. https://commons.apache.org/dormant/commons-primitives/
+<a name="note15">\[15\]</a> The Apache Software Foundation. Apache Commons Primitives. 2003. https://commons.apache.org/dormant/commons-primitives/
 
-<a name="note16">16</a>: The Apache Software Foundation. Apache JAMES Mime4j. 2004. https://james.apache.org/mime4j/
+<a name="note16">\[16\]</a> The Apache Software Foundation. Apache JAMES Mime4j. 2004. https://james.apache.org/mime4j/
 
-<a name="note17">17</a>: Jonathan Hedley. jsoup: Java HTML Parser. 2004. https://jsoup.org/
+<a name="note17">\[17\]</a> Jonathan Hedley. jsoup: Java HTML Parser. 2004. https://jsoup.org/
 
-<a name="note18">18</a>: M. Porter and R. Boulton. Snowball. 2002. http://snowballstem.org/
+<a name="note18">\[18\]</a> M. Porter and R. Boulton. Snowball. 2002. http://snowballstem.org/
 
