@@ -122,7 +122,7 @@ public class ServerTest extends Server {
     }
     
     public static final List<Server> getTestServers() {
-        MailSet[] mailsTypes = { MAILS_TEST1, MAILS_TEST2 };
+        MailSet[] mailsTypes = { /* MAILS_TEST1, */MAILS_TEST2 };
 //        MailSet[] mailsTypes = { MailSet.TEXTS_FABLES };
         List<Server> serverList = new ArrayList<>();
         for (MailSet mailsType : mailsTypes) {
@@ -318,15 +318,15 @@ public class ServerTest extends Server {
                 return false;
             }
             Path source;
-            String filename1 = getChunkedIndexFilePathName(indexName, indexMin);
-            String filename2 = getChunkedIndexFilePathName(indexName, indexMin + 1);
+//            String filename1 = getChunkedIndexFilePathName(indexName, indexMin);
+//            String filename2 = getChunkedIndexFilePathName(indexName, indexMin + 1);
             // Put those two chunks at the end of the list.
             try {
                 // Renaming the two chunks.
-                source = Paths.get(filename1);
-                Path tmpPath1 = Files.move(source, source.resolveSibling("tmp_chunk1." + fileExtension), StandardCopyOption.REPLACE_EXISTING);
-                source = Paths.get(filename2);
-                Path tmpPath2 = Files.move(source, source.resolveSibling("tmp_chunk2." + fileExtension), StandardCopyOption.REPLACE_EXISTING);
+//                source = Paths.get(filename1);
+//                Path tmpPath1 = Files.move(source, source.resolveSibling("tmp_chunk1." + fileExtension), StandardCopyOption.REPLACE_EXISTING);
+//                source = Paths.get(filename2);
+//                Path tmpPath2 = Files.move(source, source.resolveSibling("tmp_chunk2." + fileExtension), StandardCopyOption.REPLACE_EXISTING);
                 // Renaming all the chunks with greater id 2 ids before.
                 for (int i = indexMin + 2; i < nbIndexChunks; i++) {
                     String filenameChunk = getChunkedIndexFilePathName(indexName, i);
@@ -335,12 +335,12 @@ public class ServerTest extends Server {
                     Files.move(source, source.resolveSibling(filenameChunkBefore), StandardCopyOption.REPLACE_EXISTING);
                 }
                 // Renaming the two tmp files to the last chunk files.
-                source = tmpPath1;
-                filename1 = getChunkedIndexFileName(indexName, nbIndexChunks - 2);
-                Files.move(source, source.resolveSibling(filename1), StandardCopyOption.REPLACE_EXISTING);
-                source = tmpPath2;
-                filename2 = getChunkedIndexFileName(indexName, nbIndexChunks - 1);
-                Files.move(source, source.resolveSibling(filename2), StandardCopyOption.REPLACE_EXISTING);
+//                source = tmpPath1;
+//                filename1 = getChunkedIndexFileName(indexName, nbIndexChunks - 2);
+//                Files.move(source, source.resolveSibling(filename1), StandardCopyOption.REPLACE_EXISTING);
+//                source = tmpPath2;
+//                filename2 = getChunkedIndexFileName(indexName, nbIndexChunks - 1);
+//                Files.move(source, source.resolveSibling(filename2), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 System.out.println("IOException when updating the chunked index files.");
                 e.printStackTrace();

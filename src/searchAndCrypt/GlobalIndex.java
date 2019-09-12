@@ -268,7 +268,7 @@ public class GlobalIndex {
     /*
      * Merge two sorted arrayIntLists.
      */
-    private ArrayIntList mergeArrayIntList(ArrayIntList list1, ArrayIntList list2) {
+    private static ArrayIntList mergeArrayIntList(ArrayIntList list1, ArrayIntList list2) {
         ArrayIntList mergedList = new ArrayIntList();
         int i1 = 0, i2 = 0;
         while (i1 + i2 < list1.size() + list2.size()) {
@@ -295,7 +295,7 @@ public class GlobalIndex {
     }
     
     /*
-     * Import from two chunk file, and merge them.
+     * Import from two chunk files, and merge them.
      * Structure of the file depends of the index type.
      */
     public File importAndMerge(File fileChunk1, File fileChunk2, String indexType, boolean inASCII) {
@@ -353,14 +353,27 @@ public class GlobalIndex {
                             Tools.readCodeListASCII(indexType, splitLine[1], nbMails2, nbMailsLocal2, mailList2);
                         }
                     }
-                    if (name1.equals(name2)) {
+                    boolean write1 = false, write2 = false;
+                    if (i2 >= nbNames2) {
+                        write1 = true;
+                    } else if (i1 >= nbNames1) {
+                        write2 = true;
+                    } else if (name1.compareTo(name2) < 0) {
+                        write1 = true;
+                    } else if (name1.compareTo(name2) > 0) {
+                        write2 = true;
+                    } else {
+                        write1 = true;
+                        write2 = true;
+                    }
+                    if (write1 && write2) {
                         entry.name = name1;
                         entry.mailList = mergeArrayIntList(mailList1, mailList2);
                         i1++;
                         i2++;
                         readFile1 = i1 < nbNames1;
                         readFile2 = i2 < nbNames2;
-                    } else if (i1 < nbNames1 && name1.compareTo(name2) < 0) {
+                    } else if (write1) {
                         entry.name = name1;
                         entry.mailList = mailList1;
                         i1++;
@@ -415,14 +428,27 @@ public class GlobalIndex {
                     mailList2 = new ArrayIntList();
                     Tools.readCodeList(indexType, in2, nbMails2, nbMailsLocal2, mailList2);
                 }
-                if (name1.equals(name2)) {
+                boolean write1 = false, write2 = false;
+                if (i2 >= nbNames2) {
+                    write1 = true;
+                } else if (i1 >= nbNames1) {
+                    write2 = true;
+                } else if (name1.compareTo(name2) < 0) {
+                    write1 = true;
+                } else if (name1.compareTo(name2) > 0) {
+                    write2 = true;
+                } else {
+                    write1 = true;
+                    write2 = true;
+                }
+                if (write1 && write2) {
                     entry.name = name1;
                     entry.mailList = mergeArrayIntList(mailList1, mailList2);
                     i1++;
                     i2++;
                     readFile1 = i1 < nbNames1;
                     readFile2 = i2 < nbNames2;
-                } else if (i1 < nbNames1 && name1.compareTo(name2) < 0) {
+                } else if (write1) {
                     entry.name = name1;
                     entry.mailList = mailList1;
                     i1++;

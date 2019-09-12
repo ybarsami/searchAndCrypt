@@ -37,6 +37,7 @@ public class Tools {
     
     /*
      * Returns the ceiling of log2(x).
+     * x must be >= 1.
      */
     public static int ceilingLog2(int x) {
         return ilog2(x - 1) + 1;
@@ -50,7 +51,9 @@ public class Tools {
     }
     
     /*
-     * Returns the floor of log2(x).
+     * Returns the floor of log2(x) if x >= 1 ; return -1 if x == 0 (this allows
+     * the formula for ceilingLog2(x) = ilog2(x - 1) + 1).
+     * x must be >= 0.
      */
     public static int ilog2(int x) {
         return 31 - Integer.numberOfLeadingZeros(x);
@@ -80,8 +83,9 @@ public class Tools {
     
     public static BitSetWithLastPosition binaryOfMailList(ArrayIntList mailList, int nbBits) {
         BitSetWithLastPosition buffer = new BitSetWithLastPosition();
+        ArrayIntList gapList = gapList(mailList);
         for (int i = 0; i < mailList.size(); i++) {
-            Tools.writeCodeBinary(mailList.get(i), buffer, nbBits);
+            Tools.writeCodeBinary(gapList.get(i), buffer, nbBits);
         }
         return buffer;
     }
@@ -289,7 +293,8 @@ public class Tools {
     }
     
     /*
-     * Writes x on just nbBits bits (assumes that x < 2^nbBits).
+     * Writes x on just nbBits bits.
+     * Assumes that 0 <= x < 2^nbBits.
      */
     public static void writeCodeBinary(int x, BitSetWithLastPosition buffer, int nbBits) {
         int bitMask = 1 << (nbBits - 1);
@@ -309,8 +314,9 @@ public class Tools {
     
     /*
      * Witten, Moffat, Bell, "Managing Gigabytes" (1999), p. 117
-     * One such code is the unary code. In this code an integer x > 1 is coded as x — 1
-     * one bits followed by a zero bit, so that the code for integer 3 is 110.
+     * One such code is the unary code. In this code an integer x > 1 is coded
+     * as x - 1 one bits followed by a zero bit, so that the code for integer 3
+     * is 110.
      */
     public static void writeCodeUnary(int x, BitSetWithLastPosition buffer) {
         // x - 1 "1"
@@ -321,13 +327,14 @@ public class Tools {
     
     /*
      * Witten, Moffat, Bell, "Managing Gigabytes" (1999), p. 117
-     * One is the \gamma code, which represents the
-     * number x as a unary code for 1 + floor(log x) followed by a code of floor(log x) bits that
-     * represents the value of x - 2^{floor(x)} in binary. The unary part specifies how many bits
-     * are required to code x, and then the binary part actually codes x in that many bits.
-     * For example, consider x = 9. Then floor(log x) = 3, and so 4 = 1 + 3 is coded in unary
-     * (code 1110) followed by 1 = 9 - 8 as a three-bit binary number (code 001), which
-     * combine to give a codeword of 1110 001.
+     * One is the \gamma code, which represents the number x as a unary code for
+     * 1 + floor(log x) followed by a code of floor(log x) bits that represents
+     * the value of x - 2^{floor(x)} in binary. The unary part specifies how
+     * many bits are required to code x, and then the binary part actually codes
+     * x in that many bits. For example, consider x = 9. Then floor(log x) = 3,
+     * and so 4 = 1 + 3 is coded in unary (code 1110) followed by 1 = 9 - 8 as a
+     * three-bit binary number (code 001), which combine to give a codeword of
+     * 1110 001.
      */
     public static void writeCodeGamma(int x, BitSetWithLastPosition buffer) {
         int ilog2x = ilog2(x);
@@ -338,10 +345,11 @@ public class Tools {
     
     /*
      * Witten, Moffat, Bell, "Managing Gigabytes" (1999), p. 117
-     * A further development is the \delta code, in which the prefix indicating the number
-     * of binary suffix bits is represented by the \gamma code rather than the unary code. Taking
-     * the same example of x = 9, the unary prefix of 1110 coding 4 is replaced by 11000,
-     * the \gamma code for 4. That is, the \delta code for x = 9 is 11000 001.
+     * A further development is the \delta code, in which the prefix indicating
+     * the number of binary suffix bits is represented by the \gamma code rather
+     * than the unary code. Taking the same example of x = 9, the unary prefix
+     * of 1110 coding 4 is replaced by 11000, the \gamma code for 4. That is,
+     * the \delta code for x = 9 is 11000 001.
      */
     public static void writeCodeDelta(int x, BitSetWithLastPosition buffer) {
         int ilog2x = ilog2(x);
@@ -561,6 +569,14 @@ public class Tools {
         }
     }
     
+    public static void readCodeListVariableByte(DataInputStream in, int nbMailsLocal, ArrayIntList mailList) {
+        readCodeListVariableXBits(in, nbMailsLocal, mailList, nbBitsPerByte);
+    }
+    
+    public static void readCodeListVariableNibble(DataInputStream in, int nbMailsLocal, ArrayIntList mailList) {
+        readCodeListVariableXBits(in, nbMailsLocal, mailList, nbBitsPerNibble);
+    }
+    
     public static void readCodeListVariableXBits(DataInputStream in, int nbMailsLocal, ArrayIntList mailList, int nbBitsPerChunk) {
         int[] currentBits = new int[nbBitsPerByte];
         int nbCurrentBitsRead = nbBitsPerByte;
@@ -590,14 +606,6 @@ public class Tools {
                 gap = 0;
             }
         }
-    }
-    
-    public static void readCodeListVariableByte(DataInputStream in, int nbMailsLocal, ArrayIntList mailList) {
-        readCodeListVariableXBits(in, nbMailsLocal, mailList, nbBitsPerByte);
-    }
-    
-    public static void readCodeListVariableNibble(DataInputStream in, int nbMailsLocal, ArrayIntList mailList) {
-        readCodeListVariableXBits(in, nbMailsLocal, mailList, nbBitsPerNibble);
     }
     
     
@@ -673,7 +681,7 @@ public class Tools {
      *    - accentuated letters with normal letters (e.g., "é" with "e"),
      *    - double letters with their two letters (e.g., "œ" with "oe"),
      *    - special characters with " " (e.g., "-" with " ").
-     * N.B. : it is required for the Snowball stemmer that words do not contain
+     * N.B.: it is required for the Snowball stemmer that words do not contain
      * capitalized letters, see https://snowballstem.org/texts/vowelmarking.html
      * For a full example,
      *    - "C'est-à-dire que les œufs" will be normalized as

@@ -495,13 +495,13 @@ public class MimeParse {
         
         // Merge the chunks of the index.
         while (server.getNbIndexChunks() > 1) {
-            List<File> chunks12 = server.getTwoChunksIndex(indexType);
+            List<File> chunks12 = server.getTwoChunksIndex(indexType + (inASCII ? "_ASCII" : ""));
             File merged = globalIndex.importAndMerge(chunks12.get(0), chunks12.get(1), indexType, inASCII);
-            server.addChunkedIndexFile(merged, inASCII ? "ASCII" : indexType, Server.NOT_A_NEW_CHUNK);
+            server.addChunkedIndexFile(merged, indexType + (inASCII ? "_ASCII" : ""), Server.NOT_A_NEW_CHUNK);
         }
         
         // Store the full index on the server.
-        server.replaceIndexWithLastChunk(inASCII ? "ASCII" : indexType);
+        server.replaceIndexWithLastChunk(indexType + (inASCII ? "_ASCII" : ""));
     }
     public void indexEverything(Server server, String indexType) {
         indexEverything(server, indexType, false);

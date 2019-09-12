@@ -54,8 +54,6 @@ necessary.
 
 ## Content of this repository ##
 
-**build:** the files generated when building this library.
-
 **datasets:** contains 5 sets of documents that can be used to test the
 library:
 
