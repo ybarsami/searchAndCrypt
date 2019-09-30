@@ -1,7 +1,10 @@
 /**
- * BitSetWithLastPosition.java
- *
- * Created on 24 avr. 2019
+ * This class overrides some methods of the java.util.BitSet class by providing
+ * a way to know what is the last bit which is relevant. We thus store a private
+ * int "lastPosition" indicating that all bits (even those which have value 0)
+ * at index less or equal to lastPosition are relevant.
+ * 
+ * WARNING : not all functions have been overriden, only the ones I use.
  */
 
 package searchAndCrypt;
@@ -13,8 +16,6 @@ import java.util.BitSet;
  * @author yann
  */
 public class BitSetWithLastPosition extends BitSet {
-    
-    // WARNING : not all functions have been overriden, only the ones I use.
     
     private int lastPosition; // The last position of a bit which have been a value (1 or 0) of bitSet.
                               // It is neither bitSet.size() --- which is implementation-dependant.
@@ -28,13 +29,21 @@ public class BitSetWithLastPosition extends BitSet {
         lastPosition = -1;
     }
     
+    /*
+     * The numberof relevant bits in the BitSet. Because indexes start at 0, it
+     * is thus just lastPosition + 1.
+     */
     public int nbBitsSet() {
         return lastPosition + 1;
     }
     
     /*
      * Returns a new byte array containing all the bits in this bit set.
-     * Do not use super.toByteArray as it writes bits in LITTLE_ENDIAN.
+     * The bits are written in BIG_ENDIAN.
+     * 
+     * WARNING: The BitSet class from which this class inherites uses a
+     * different representation, and super.toByteArray writes bits in
+     * LITTLE_ENDIAN.
      * e.g. 242_{10} = 11110010_2 would be written as 01001111_2 = 79_{10}.
      */
     @Override
@@ -46,21 +55,6 @@ public class BitSetWithLastPosition extends BitSet {
             }
         }
         return bytes;
-        /*
-        // Warning, for this code we need to ensure the LITTLE_ENDIAN in the read/write code.
-        int difference = Tools.ceilingDivision(nbBitsSet(), Tools.nbBitsPerByte) - Tools.ceilingDivision(length(), Tools.nbBitsPerByte);
-        if (difference > 0) {
-            byte[] byteArray = new byte[super.toByteArray().length + difference];
-            int pos = 0;
-            for (byte b : super.toByteArray()) {
-                byteArray[pos] = b;
-                pos++;
-            }
-            return byteArray;
-        } else {
-            return super.toByteArray();
-        }
-        */
     }
     
     /*
@@ -76,6 +70,9 @@ public class BitSetWithLastPosition extends BitSet {
         }
     }
     
+    /*
+     * Adds a bit just after the last position and sets it to {@code true}.
+     */
     public void setEnd() {
         set(lastPosition + 1);
     }
@@ -93,12 +90,15 @@ public class BitSetWithLastPosition extends BitSet {
         }
     }
     
+    /*
+     * Adds a bit just after the last position and sets it to {@code false}.
+     */
     public void clearEnd() {
         clear(lastPosition + 1);
     }
     
     /*
-     * Sets the bit after the last position to the specified value.
+     * Sets the bit just after the last position to the specified value.
      * N.B. : I think that this function has a bad name. set is everywhere else
      * used meaning "set to 1" and here it is the only place where it really
      * means "set to a given value". But this was the choice made in BitSet.

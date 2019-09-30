@@ -1,7 +1,7 @@
 /**
- * ServerTest.java
- *
- * Created on 14 févr. 2019
+ * Example of use of the abstract Server API, in the context of a local
+ * Server where all the e-mails are stored in a specific folder (and in
+ * sub-folders from this location).
  */
 
 package searchAndCrypt;
@@ -29,13 +29,18 @@ import java.util.TreeSet;
  */
 public class ServerTest extends Server {
     
+    // The folder where the test datasets are located, relatively to the home
+    // path of the library.
     public final static String datasetsFolderName = "datasets";
     
+    /*
+     * A MailSet describes a dataset consisting of e-mails.
+     */
     public static class MailSet {
         
-        private final String language;
-        private final String name;
-        private final String folderName;
+        private final String language;   // Language of the e-mails
+        private final String name;       // Name for the dataset.
+        private final String folderName; // Folder where the dataset is located.
         
         // Constructor
         MailSet(String language, String name, String folderName) {
@@ -52,21 +57,16 @@ public class ServerTest extends Server {
         public String getFolderName() { return folderName; }
     }
     
+    /* Two examples of datasets, taken from the Enron corpus of e-mails.
+     * B. Klimt and Y. Yang. "The Enron Corpus: A New Dataset for Email
+     * Classification Research". 2004.
+     * http://dx.doi.org/10.1007/978-3-540-30115-8_22
+     * We cleaned the original folders by removing the e-mails which were there
+     * multiple times, as suggested in the article. The allen-p dataset contains
+     * 1410 e-mails and the dasovich-j dataset contains 15748 e-mails.
+     */
     public static MailSet MAILS_TEST1 = new MailSet("allen-p");
     public static MailSet MAILS_TEST2 = new MailSet("dasovich-j");
-    public static MailSet TEXTS_FABLES = new MailSet("french", "Fables", datasetsFolderName + File.separatorChar +
-            "Fables"); // 240 fables
-    
-    public static enum MailSort {
-        FOLDER_NAMES, // Leave the sorting as it has been done by the folders created by the user.
-        INTERLOCUTOR, // Sort by interlocutor, then by time.
-        TIME;         // Sort by time.
-    }
-    private MailSort mailSort;                   // How e-mails are sorted.
-    
-    public MailSort getMailSort() {
-        return mailSort;
-    }
     
     private String folderNameMails;              // Name of the folder that stores the mails.
     private String folderNameIndex;              // Name of the folder that stores the index.
@@ -102,28 +102,16 @@ public class ServerTest extends Server {
         nbIndexChunks = 0;
         maxIdIndexedMail = 0;
         
-        if (mailsType.getName().equals("Fables")) {
-            mailSort = MailSort.FOLDER_NAMES;
-        } else {
-            mailSort = MailSort.INTERLOCUTOR;
-        }
-        
         loadMails(mailsType);
         language = mailsType.getLanguage();
     }
-    public ServerTest(String mailsType, String language) {
-        fileNameIndex = "test_";
-        fileExtension = "txt";
-        nbIndexChunks = 0;
-        maxIdIndexedMail = 0;
-        mailSort = MailSort.FOLDER_NAMES;
-        folderNameIndex = mailsType + "_test";
-        this.language = language;
-    }
     
+    /*
+     * Returns the list contained of the two ServerTest created from the two
+     * e-mail boxes extracted from the Enron dataset.
+     */
     public static final List<Server> getTestServers() {
-        MailSet[] mailsTypes = { /* MAILS_TEST1, */MAILS_TEST2 };
-//        MailSet[] mailsTypes = { MailSet.TEXTS_FABLES };
+        MailSet[] mailsTypes = { MAILS_TEST1, MAILS_TEST2 };
         List<Server> serverList = new ArrayList<>();
         for (MailSet mailsType : mailsTypes) {
             serverList.add(new ServerTest(mailsType));
@@ -131,18 +119,13 @@ public class ServerTest extends Server {
         return serverList;
     }
     
+    /*
+     * 
+     */
     private final void loadMails(MailSet mailsType) {
         folderNameMails = mailsType.getFolderName();
-        switch (mailSort) {
-            case FOLDER_NAMES:
-                folderNameIndex   = mailsType.getName() + "_test";
-                fileNameBijection = mailsType.getName() + "_bijection.txt";
-                break;
-            case INTERLOCUTOR:
-                folderNameIndex   = mailsType.getName() + "_test_sort";
-                fileNameBijection = mailsType.getName() + "_bijection_sort.txt";
-                break;
-        }
+        folderNameIndex   = mailsType.getName() + "_test";
+        fileNameBijection = mailsType.getName() + "_bijection.txt";
         updateMap();
     }
     
@@ -253,7 +236,8 @@ public class ServerTest extends Server {
      */
     @Override
     public List<Integer> getRemovedMailIds() {
-        // TODO
+        // WARNING: ServerTest is a *static* Server that does not handle dynamic
+        // removal of e-mails.
         return new ArrayList<>();
     }
     
@@ -416,7 +400,7 @@ public class ServerTest extends Server {
     /*
      * Export the bijection idMsg / mailName.
      */
-    public void exportBijectionIdentifierMailFile() {
+    private void exportBijectionIdentifierMailFile() {
         final File folderMails = new File(folderNameMails);
         final String folderMailsAbsolutePath = folderMails.getAbsolutePath();
         try (FileWriter out = new FileWriter(fileNameBijection)) {
@@ -434,7 +418,7 @@ public class ServerTest extends Server {
     /*
      * Import the bijection idMsg / mailName.
      */
-    public void importBijectionIdentifierMailFile() {
+    private void importBijectionIdentifierMailFile() {
         mapBijection = new HashMap<>();
         final File folderMails = new File(folderNameMails);
         final String folderMailsAbsolutePath = folderMails.getAbsolutePath();
@@ -455,19 +439,10 @@ public class ServerTest extends Server {
         }
     }
     
-    private void computeBijectionIdentifierMailFile(MailSort mailSort) {
+    private void computeBijectionIdentifierMailFile() {
         TreeSet<File> foldersTreated = new TreeSet<>();
         mapBijection = new HashMap<>();
         computeBijectionIdentifierMailFile(new File(folderNameMails), 1, foldersTreated);
-        switch (mailSort) {
-            case INTERLOCUTOR:
-                File[] files = MimeParse.sortInterlocutor(mapBijection);
-                mapBijection = new HashMap<>();
-                for (int i = 0; i < files.length; i++) {
-                    mapBijection.put(i + 1, files[i]);
-                }
-                break;
-        }
     }
     
     private int computeBijectionIdentifierMailFile(File folder, int i, TreeSet<File> foldersTreated) {
@@ -493,13 +468,16 @@ public class ServerTest extends Server {
      */
     @Override
     public void updateMap() {
-        // TODO : for now, this just handles the base case where we compute the map from scratch.
+        // WARNING: ServerTest is a *static* Server that does not handle dynamic
+        // removal of e-mails.
+        // This function thus just handles the base case where we compute the
+        // map from scratch.
         File tempFile = new File(fileNameBijection);
         if (tempFile.exists()) {
             System.out.println(fileNameBijection + " already exists, I will use it.");
             importBijectionIdentifierMailFile();
         } else {
-            computeBijectionIdentifierMailFile(mailSort);
+            computeBijectionIdentifierMailFile();
             exportBijectionIdentifierMailFile();
         }
     }
@@ -511,6 +489,7 @@ public class ServerTest extends Server {
      */
     @Override
     public void compressMap() {
-        // TODO
+        // WARNING: ServerTest is a *static* Server that does not handle dynamic
+        // removal of e-mails.
     }
 }

@@ -1,12 +1,9 @@
-# Folders that are generated when launching the project
+# Folders and files generated when building the project
+build
+
+# Folders and files generated when launching the project
 *_test
-*_test_sort
-
-# Files that are generated when launching the project
 *_bijection.txt
-*_bijection_sort.txt
+test_ASCII.txt
 tmpDoc.txt
-
-# Yann test files
-*ServerYann*
 

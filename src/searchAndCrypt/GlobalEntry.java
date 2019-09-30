@@ -1,7 +1,5 @@
 /**
- * GlobalEntry.java
- *
- * Created on 16 janv. 2019
+ * An entry of the index, as stored in the memory.
  */
 
 package searchAndCrypt;

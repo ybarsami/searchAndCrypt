@@ -54,24 +54,13 @@ necessary.
 
 ## Content of this repository ##
 
-**datasets:** contains 5 sets of documents that can be used to test the
-library:
-
-* Bible: the King James' Bible [[2]](#note2) --- which is a dataset of choice
-because it has been used a lot of times in previous works. This dataset
-contains 31102 verses, and is split into different document at run-time.
-
-* allen-p and dasovich-j: two e-mail boxes taken from the Enron corpus of
-e-mails [[9]](#note9), which contains professional e-mail boxes of 150
-persons. We cleaned the original folders by removing the e-mails which were
-there multiple times, as suggested in the article. The allen-p dataset contains
-1410 e-mails and the dasovich-j dataset contains 15748 e-mails.
-
-* Fables: the Fables written by Jean de La Fontaine [[1]](#note1). This folder
-contains 240 files, each containing a different fable.
-
-* Hugo: 10 books written by Victor Hugo. This dataset is split at run-time into
-documents of 30 lines each, resulting into a dataset of 6000 documents.
+**datasets:** contains 2 sets of documents that can be used to test the
+library: allen-p and dasovich-j. Those dataset are two e-mail boxes taken from
+the Enron corpus of e-mails [[7]](#note7), which contains professional e-mail
+boxes of 150 persons. We cleaned the original folders by removing the e-mails
+which were there multiple times, as suggested in the article. The allen-p
+dataset contains 1410 e-mails and the dasovich-j dataset contains 15748
+e-mails.
 
 **dist:** the .jar executable of this library, build with Netbeans, also
 containing the libraries on which this one depends.
@@ -86,7 +75,7 @@ containing the libraries on which this one depends.
 ## The inverted index: a simple example ##
 
 Let us start with a simple example, taken from "Managing Gigabytes"
-[[3]](#note3). For now, we will omit the technical details which are part of
+[[1]](#note1). For now, we will omit the technical details which are part of
 the representation of an e-mail, and will just consider a set of documents to
 index. [Table 1](#table1) shows a set of 6 documents that we want to index.
 [Table 2](#table2) shows the inverted index of this set of documents (sorted
@@ -142,7 +131,7 @@ contains those 2 words.
 
 ## The dependencies ##
 
-* the Apache Commons Primitives [[15]](#note15) library for the `ArrayIntList`
+* the Apache Commons Primitives [[13]](#note13) library for the `ArrayIntList`
   Java class. This class uses *32 x N* bits of memory for a list of *N*
   integers instead of *128 x N* bits when using `ArrayList<Integer>`. Since
   those lists are the most memory-consuming of our library, gaining a factor of
@@ -158,7 +147,7 @@ contains those 2 words.
   N.B.: The ArrayIntList Java class can be easily rewritten if needed. It is
   thus possible to avoid this dependency.
 
-* the Apache JAMES Mime4j [[16]](#note16) library for the parsing of e-mails
+* the Apache JAMES Mime4j [[14]](#note14) library for the parsing of e-mails
   in the MIME format.
   
   N.B.: Parsing MIME messages is absolutely needed for the library. It would
@@ -166,13 +155,13 @@ contains those 2 words.
   the Apache JAMES Mime4j exist, *e.g.*, JavaMail
   (https://javaee.github.io/javamail/).
 
-* jsoup [[17]](#note17) library for the parsing of HTML portions of e-mails.
+* jsoup [[15]](#note15) library for the parsing of HTML portions of e-mails.
   
   N.B.: parsing HTML is not mandatory, it just allows to avoid indexing useless
   HTML markups. Because we only use the function `text()` which extracts the
   text from a HTML document, this function can be rewritten if needed.
 
-* the Snowball library [[18]](#note18) for stemming.
+* the Snowball library [[16]](#note16) for stemming.
   
   N.B.: Stemming is more than welcome, in the sense that it is practically
   impossible for a user to know whether they have to search for, *e.g.*,
@@ -279,7 +268,7 @@ can be represented by gaps
     7, 11, 1, 3, 1, 2, 38, ...
 
 Multiple ways to compress this list of gaps have been proposed.
-[Table 3](#table3) [[3]](#note3) shows the compression which can be
+[Table 3](#table3) [[1]](#note1) shows the compression which can be
 obtained via most of those methods. In this table, four datasets have been
 used: the King James' Bible, a bibliographic dataset (GNUbib), a collection of
 law documents (Comact: the Commonwealth Acts of Austria), and a collection of
@@ -290,21 +279,21 @@ is the compression method.
 
 <a name="table3">Table 3</a>: Compression of inverted files in bits per pointer.
 
-| Method                                           | Bible  | GNUbib | Comact | TREC    |
-|--------------------------------------------------|-------:|-------:|-------:|--------:|
-| *Global methods*                                 |        |        |        |         |
-| Unary                                            | 262.00 | 909.00 | 487.00 | 1918.00 |
-| Binary                                           |  15.00 |  16.00 |  18.00 |   20.00 |
-| Bernoulli [[8]](#note8) [[7]](#note7)            |   9.86 |  11.06 |  10.90 |   12.30 |
-| gamma [[6]](#note6) [[4]](#note4)                |   6.51 |   5.68 |   4.48 |    6.63 |
-| delta [[6]](#note6) [[4]](#note4)                |   6.23 |   5.08 |   4.35 |    6.38 |
-| Observed frequency                               |   5.90 |   4.82 |   4.20 |    5.97 |
-| *Local methods*                                  |        |        |        |         |
-| Bernoulli [[14]](#note14) [[5]](#note5)          |   6.09 |   6.16 |   5.40 |    5.84 |
-| Hyperbolic [[12]](#note12)                       |   5.75 |   5.16 |   4.65 |    5.89 |
-| Skewed Bernoulli [[13]](#note13) [[11]](#note11) |   5.65 |   4.70 |   4.20 |    5.44 |
-| Batched frequency [[11]](#note11)                |   5.58 |   4.64 |   4.02 |    5.41 |
-| Interpolative [[10]](#note10)                    |   5.24 |   3.98 |   3.87 |    5.18 |
+| Method                                         | Bible  | GNUbib | Comact | TREC    |
+|------------------------------------------------|-------:|-------:|-------:|--------:|
+| *Global methods*                               |        |        |        |         |
+| Unary                                          | 262.00 | 909.00 | 487.00 | 1918.00 |
+| Binary                                         |  15.00 |  16.00 |  18.00 |   20.00 |
+| Bernoulli [[6]](#note6) [[5]](#note5)          |   9.86 |  11.06 |  10.90 |   12.30 |
+| gamma [[4]](#note4) [[2]](#note2)              |   6.51 |   5.68 |   4.48 |    6.63 |
+| delta [[4]](#note4) [[2]](#note2)              |   6.23 |   5.08 |   4.35 |    6.38 |
+| Observed frequency                             |   5.90 |   4.82 |   4.20 |    5.97 |
+| *Local methods*                                |        |        |        |         |
+| Bernoulli [[12]](#note12) [[3]](#note3)        |   6.09 |   6.16 |   5.40 |    5.84 |
+| Hyperbolic [[10]](#note10)                     |   5.75 |   5.16 |   4.65 |    5.89 |
+| Skewed Bernoulli [[11]](#note11) [[9]](#note9) |   5.65 |   4.70 |   4.20 |    5.44 |
+| Batched frequency [[9]](#note9)                |   5.58 |   4.64 |   4.02 |    5.41 |
+| Interpolative [[8]](#note8)                    |   5.24 |   3.98 |   3.87 |    5.18 |
 
 
 
@@ -312,43 +301,39 @@ is the compression method.
 
 ## Books ##
 
-<a name="note1">\[1\]</a> La Fontaine, J. de. "Fables". 1694. https://www.gutenberg.org/files/56327/56327-0.txt
-
-<a name="note2">\[2\]</a> Various. "Bible" (English translation). http://www.gutenberg.org/cache/epub/30/pg30.txt
-
-<a name="note3">\[3\]</a> I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
+<a name="note1">\[1\]</a> I. H. Witten, A. Moffat, and T. C. Bell. "Managing Gigabytes". Morgan Kaufmann Publishing, San Francisco, 1999. https://people.eng.unimelb.edu.au/ammoffat/mg/
 
 ## Articles ##
 
-<a name="note4">\[4\]</a> J. L. Bentley and A. C.-C. Yao. “An almost optimal algorithm for unbounded searching”. Information Processing Letters 5.3 (1976), pp. 82–87. http://dx.doi.org/10.1016/0020-0190(76)90071-5
+<a name="note2">\[2\]</a> J. L. Bentley and A. C.-C. Yao. “An almost optimal algorithm for unbounded searching”. Information Processing Letters 5.3 (1976), pp. 82–87. http://dx.doi.org/10.1016/0020-0190(76)90071-5
 
-<a name="note5">\[5\]</a> A. Bookstein, S. T. Klein, and T. Raita. “Model based concordance compression”. Proceedings of the 2nd Data Compression Conference (DCC). 1992. http://dx.doi.org/10.1109/DCC.1992.227473
+<a name="note3">\[3\]</a> A. Bookstein, S. T. Klein, and T. Raita. “Model based concordance compression”. Proceedings of the 2nd Data Compression Conference (DCC). 1992. http://dx.doi.org/10.1109/DCC.1992.227473
 
-<a name="note6">\[6\]</a> P. Elias. “Universal Codeword Sets and Representations of the Integers”. IEEE Transactions on Information Theory 21.2 (1975), pp. 194–203. http://dx.doi.org/10.1109/TIT.1975.1055349
+<a name="note4">\[4\]</a> P. Elias. “Universal Codeword Sets and Representations of the Integers”. IEEE Transactions on Information Theory 21.2 (1975), pp. 194–203. http://dx.doi.org/10.1109/TIT.1975.1055349
 
-<a name="note7">\[7\]</a> R. Gallager and D. van Voorhis. “Optimal source codes for geometrically distributed integer alphabets (Correspondence)”. IEEE Transactions on Information Theory 21.2 (1975), pp. 228–230. http://dx.doi.org/10.1109/TIT.1975.1055357
+<a name="note5">\[5\]</a> R. Gallager and D. van Voorhis. “Optimal source codes for geometrically distributed integer alphabets (Correspondence)”. IEEE Transactions on Information Theory 21.2 (1975), pp. 228–230. http://dx.doi.org/10.1109/TIT.1975.1055357
 
-<a name="note8">\[8\]</a> S. Golomb. “Run-length Encodings (Correspondence)”. IEEE Transactions on Information Theory 12.3 (1966), pp. 399–401. http://dx.doi.org/10.1109/TIT.1966.1053907
+<a name="note6">\[6\]</a> S. Golomb. “Run-length Encodings (Correspondence)”. IEEE Transactions on Information Theory 12.3 (1966), pp. 399–401. http://dx.doi.org/10.1109/TIT.1966.1053907
 
-<a name="note9">\[9\]</a> B. Klimt and Y. Yang. "The Enron Corpus: A New Dataset for Email Classification Research". Proceedings of the 15th European Conference on Machine Learning (ECML). Springer Berlin Heidelberg, 2004. http://dx.doi.org/10.1007/978-3-540-30115-8_22
+<a name="note7">\[7\]</a> B. Klimt and Y. Yang. "The Enron Corpus: A New Dataset for Email Classification Research". Proceedings of the 15th European Conference on Machine Learning (ECML). Springer Berlin Heidelberg, 2004. http://dx.doi.org/10.1007/978-3-540-30115-8_22
 
-<a name="note10">\[10\]</a> A. Moffat and L. Stuiver. “Exploiting clustering in inverted file compression”. Proceedings of the 6th Data Compression Conference (DCC). 1996, pp. 82–91. http://dx.doi.org/10.1109/DCC.1996.488313
+<a name="note8">\[8\]</a> A. Moffat and L. Stuiver. “Exploiting clustering in inverted file compression”. Proceedings of the 6th Data Compression Conference (DCC). 1996, pp. 82–91. http://dx.doi.org/10.1109/DCC.1996.488313
 
-<a name="note11">\[11\]</a> A. Moffat and J. Zobel. “Parameterised Compression for Sparse Bitmaps”. Proceedings of the 15th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 1992, pp. 274–285. http://dx.doi.org/10.1145/133160.133210
+<a name="note9">\[9\]</a> A. Moffat and J. Zobel. “Parameterised Compression for Sparse Bitmaps”. Proceedings of the 15th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 1992, pp. 274–285. http://dx.doi.org/10.1145/133160.133210
 
-<a name="note12">\[12\]</a> E. J. Schuegraf. “Compression of large inverted files with hyperbolic term distribution”. Information Processing & Management 12.6 (1976), pp. 377–384. http://dx.doi.org/10.1016/0306-4573(76)90035-2
+<a name="note10">\[10\]</a> E. J. Schuegraf. “Compression of large inverted files with hyperbolic term distribution”. Information Processing & Management 12.6 (1976), pp. 377–384. http://dx.doi.org/10.1016/0306-4573(76)90035-2
 
-<a name="note13">\[13\]</a> J. Teuhola. “A compression method for clustered bit-vectors”. Information Processing Letters 7.6 (1978), pp. 308–311. http://dx.doi.org/10.1016/0020-0190(78)90024-8
+<a name="note11">\[11\]</a> J. Teuhola. “A compression method for clustered bit-vectors”. Information Processing Letters 7.6 (1978), pp. 308–311. http://dx.doi.org/10.1016/0020-0190(78)90024-8
 
-<a name="note14">\[14\]</a> I. H. Witten, T. C. Bell, and C. G. Nevill. “Indexing and compressing full-text databases for CD-ROM”. Journal of Information Science 17.5 (1991), pp. 265–271. http://dx.doi.org/10.1177/016555159101700502
+<a name="note12">\[12\]</a> I. H. Witten, T. C. Bell, and C. G. Nevill. “Indexing and compressing full-text databases for CD-ROM”. Journal of Information Science 17.5 (1991), pp. 265–271. http://dx.doi.org/10.1177/016555159101700502
 
 ## Tools ##
 
-<a name="note15">\[15\]</a> The Apache Software Foundation. Apache Commons Primitives. 2003. https://commons.apache.org/dormant/commons-primitives/
+<a name="note13">\[13\]</a> The Apache Software Foundation. Apache Commons Primitives. 2003. https://commons.apache.org/dormant/commons-primitives/
 
-<a name="note16">\[16\]</a> The Apache Software Foundation. Apache JAMES Mime4j. 2004. https://james.apache.org/mime4j/
+<a name="note14">\[14\]</a> The Apache Software Foundation. Apache JAMES Mime4j. 2004. https://james.apache.org/mime4j/
 
-<a name="note17">\[17\]</a> Jonathan Hedley. jsoup: Java HTML Parser. 2004. https://jsoup.org/
+<a name="note15">\[15\]</a> Jonathan Hedley. jsoup: Java HTML Parser. 2004. https://jsoup.org/
 
-<a name="note18">\[18\]</a> M. Porter and R. Boulton. Snowball. 2002. http://snowballstem.org/
+<a name="note16">\[16\]</a> M. Porter and R. Boulton. Snowball. 2002. http://snowballstem.org/
 

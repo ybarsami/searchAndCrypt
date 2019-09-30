@@ -1,7 +1,5 @@
 /**
- * Request.java
- *
- * Created on 14 févr. 2019
+ * Basic request.
  */
 
 package searchAndCrypt;
@@ -9,6 +7,7 @@ package searchAndCrypt;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.tartarus.snowball.SnowballStemmer;
@@ -18,9 +17,6 @@ import org.tartarus.snowball.SnowballStemmer;
  * @author yann
  */
 public class Request {
-    
-    public final static int bandwidthDownload = 600000; // Bandwidth, in bytes / second.
-    public final static int bandwidthUpload   = 200000; // Bandwidth, in bytes / second.
     
     private Server server;
     
@@ -44,23 +40,23 @@ public class Request {
      * and the actual query performed is an AND on the different words that
      * appear in the split.
      *
-     * @param request, the request written by the user.
+     * @param requestedString, the request written by the user.
      * @return the list of e-mails that match the request.
      */
-    public ArrayList<File> search(String request) {
+    public List<File> search(String requestedString) {
         // TESTING: time to transfer files from server
         double executionTime = 0.;
         
         // Normalize the String.
-        request = Tools.normalize(request);
+        requestedString = Tools.normalize(requestedString);
         
         // Get rid of empty requests.
-        if (request.length() == 0) {
+        if (requestedString.length() == 0) {
             return new ArrayList<>();
         }
         
         // Split the String into words.
-        String[] splitLine = request.split(" ");
+        String[] splitLine = requestedString.split(" ");
         
         // Get rid of requests that contains only words removed by the stemmer.
         // e.g., some stemmers also have a list of stop-words.
@@ -80,9 +76,6 @@ public class Request {
         String indexType = "delta";
         File indexFile = server.getIndexFile(indexType);
         globalIndex.importFromFile(indexFile, indexType);
-        // TESTING: time to transfer files from server
-        executionTime += (double) indexFile.length() / (double) bandwidthDownload;
-        System.out.println("Downloading the global index took " + executionTime + " seconds.");
         
         // For each stemmed word from the request, put its inverted list.
         ArrayList<TreeSet<Integer>> potentialEmails = new ArrayList<>();
@@ -120,18 +113,8 @@ public class Request {
         for (Integer idMessage: blocAnswers) {
             final File email = server.getMessage(idMessage);
             answers.add(email);
-            // TESTING: time to transfer files from server
-            /*
-            double timeDownloadEmail = (double) email.length() / (double) bandwidthDownload;
-            executionTime += timeDownloadEmail;
-            System.out.println("Downloading the mail index " + idMessage + " ( " + email.length() +
-                    " bytes) took " + timeDownloadEmail + " seconds.");
-            System.out.println("Total execution time for now is " + executionTime + " seconds.");
-            */
         }
         
-        // TESTING: time to transfer files from server
-        System.out.println("Request for '" + request + "' took " + executionTime + " seconds.");
         return answers;
     }
 

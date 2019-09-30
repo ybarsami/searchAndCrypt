@@ -1,7 +1,6 @@
 /**
- * Server.java
- *
- * Created on 31 mai 2019
+ * Global API that a server should follow in order to use the functionalities
+ * of this library.
  */
 
 package searchAndCrypt;
