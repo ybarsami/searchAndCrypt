@@ -16,8 +16,7 @@ package compressionMethods;
 
 import java.io.DataInputStream;
 
-import searchAndCrypt.BitSetWithLastPosition;
-import static searchAndCrypt.Tools.*;
+import static compressionMethods.Tools.*;
 
 /**
  *

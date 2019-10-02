@@ -31,8 +31,7 @@ import java.io.DataInputStream;
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
 
-import searchAndCrypt.BitSetWithLastPosition;
-import static searchAndCrypt.Tools.*;
+import static compressionMethods.Tools.*;
 
 /**
  *

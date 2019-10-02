@@ -7,7 +7,7 @@
  * WARNING : not all functions have been overriden, only the ones I use.
  */
 
-package searchAndCrypt;
+package compressionMethods;
 
 import java.util.BitSet;
 

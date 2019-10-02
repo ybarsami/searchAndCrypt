@@ -2,7 +2,7 @@
  * Integer and string tools.
  */
 
-package searchAndCrypt;
+package compressionMethods;
 
 import java.io.DataInputStream;
 import java.io.IOException;

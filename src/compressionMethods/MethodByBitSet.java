@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 
-import searchAndCrypt.BitSetWithLastPosition;
-
 /**
  *
  * @author yann
