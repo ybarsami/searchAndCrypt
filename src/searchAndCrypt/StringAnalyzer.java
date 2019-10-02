@@ -4,8 +4,11 @@
 
 package searchAndCrypt;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.tartarus.snowball.SnowballStemmer;
 
@@ -15,13 +18,23 @@ import org.tartarus.snowball.SnowballStemmer;
  */
 public class StringAnalyzer {
     
-    // Stem words. Default is no stemmer.
-    private SnowballStemmer stemmer = null;
+    @FunctionalInterface
+    interface WordStemmer extends Function<String, String> {}
     
-    public void setStemmer(SnowballStemmer stemmer) {
-        this.stemmer = stemmer;
+    private final WordStemmer wordStemmer;
+    
+    /**
+     * Creates a new instance of StringAnalyzer.
+     */
+    public StringAnalyzer(String language) {
+        SnowballStemmer stemmer = getSnowballStemmer(language);
+        wordStemmer = (stemmer == null)
+                ? word -> word
+                : word -> {
+                    stemmer.setCurrent(word);
+                    return stemmer.stem() ? stemmer.getCurrent() : null;
+                };
     }
-    
     
     /*
      * We have a new string to analyze.
@@ -29,35 +42,32 @@ public class StringAnalyzer {
      * @param toBeIndexed, the string to be analyzed.
      */
     public List<String> analyzeNewString(String toBeAnalyzed) {
-        List<String> words = new ArrayList<>();
-        
-        // Normalize the String.
-        String normalizedString = Tools.normalize(toBeAnalyzed);
-        
-        // Split the String into words (separated by spaces).
-        String[] strings = normalizedString.split("\\s+");
-        
-        for (String str: strings) {
-            // Strip long http(s):// sub-strings (usually weird stuff inside).
-            String word = Tools.removeLongURL(str);
-            
-            // Give the word to the stemmer, and add the result to the list of
-            // words that will be returned.
-            if (stemmer == null) {
-                // No stemmer.
-                words.add(word);
-                
-            } else {
-                // SnowBall stemmer.
-                stemmer.setCurrent(word);
-                if (stemmer.stem()) {
-                    word = stemmer.getCurrent();
-                    words.add(word);
-                }
-            }
-        }
-        
-        return words;
+        return Pattern.compile(" +")
+            .splitAsStream(StringNormalizer.normalize(toBeAnalyzed))
+            .map(wordStemmer)
+            .filter(word -> word != null)
+            .collect(Collectors.toList());
     }
-
+    
+    /*
+     * Sets a language to be used by the stemmer.
+     *
+     * @param language, the String representing the language on which the
+     * stemmer will work.
+     * Valid language Strings are:
+     * danish, dutch, english, finnish, french, german, hungarian, italian,
+     * norwegian, porter, portuguese, romanian, russian, spanish, swedish,
+     * turkish.
+     */
+    public static final SnowballStemmer getSnowballStemmer(String language) {
+        try {
+            Class stemClass = Class.forName("org.tartarus.snowball.ext." +
+                    language + "Stemmer");
+            return (SnowballStemmer) stemClass.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            System.out.println(language + " is not a valid language for SnowballStemmer.");
+            System.out.println("Valid languages are: danish, dutch, english, finnish, french, german, hungarian, italian, norwegian, porter, portuguese, romanian, russian, spanish, swedish, turkish.");
+        }
+        return null;
+    }
 }

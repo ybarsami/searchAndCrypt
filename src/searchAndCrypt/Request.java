@@ -10,28 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.tartarus.snowball.SnowballStemmer;
-
 /**
  *
  * @author yann
  */
 public class Request {
     
-    private Server server;
-    
-    // Stem words. Default is no stemmer.
-    private SnowballStemmer stemmer = null;
+    private final Server server;
+    private final String indexType;
+    private final StringAnalyzer stringAnalyzer;
     
     /**
      * Creates a new instance of Request.
      */
-    public Request(Server server) {
+    public Request(Server server, String indexType, StringAnalyzer stringAnalyzer) {
         this.server = server;
-    }
-    
-    public void setStemmer(SnowballStemmer stemmer) {
-        this.stemmer = stemmer;
+        this.indexType = indexType;
+        this.stringAnalyzer = stringAnalyzer;
     }
     
     /*
@@ -44,59 +39,31 @@ public class Request {
      * @return the list of e-mails that match the request.
      */
     public List<File> search(String requestedString) {
-        // TESTING: time to transfer files from server
-        double executionTime = 0.;
-        
-        // Normalize the String.
-        requestedString = Tools.normalize(requestedString);
+        List<String> requestedWords = stringAnalyzer.analyzeNewString(requestedString);
         
         // Get rid of empty requests.
-        if (requestedString.length() == 0) {
-            return new ArrayList<>();
-        }
-        
-        // Split the String into words.
-        String[] splitLine = requestedString.split(" ");
-        
-        // Get rid of requests that contains only words removed by the stemmer.
-        // e.g., some stemmers also have a list of stop-words.
-        boolean isValidRequest = false;
-        for (String word: splitLine) {
-            // Gives the word to the stemmer.
-            stemmer.setCurrent(word);
-            if (stemmer.stem()) {
-                isValidRequest = true;
-            }
-        }
-        if (!isValidRequest) {
+        if (requestedWords.isEmpty()) {
             return new ArrayList<>();
         }
         
         GlobalIndex globalIndex = new GlobalIndex();
-        String indexType = "delta";
         File indexFile = server.getIndexFile(indexType);
         globalIndex.importFromFile(indexFile, indexType);
         
         // For each stemmed word from the request, put its inverted list.
         ArrayList<TreeSet<Integer>> potentialEmails = new ArrayList<>();
         
-        for (String word: splitLine) {
-            // Gives the word to the stemmer.
-            stemmer.setCurrent(word);
-            if (stemmer.stem()) {
-                word = stemmer.getCurrent();
+        for (String word: requestedWords) {
+            // Check if this word is in the index.
+            GlobalEntry globalEntry = globalIndex.find(word);
+            
+            if (globalEntry == null) {
+                // If this word is not in the index, we can already answer.
+                return new ArrayList<>();
                 
-                // Check if this word is in the index.
-                GlobalEntry globalEntry = globalIndex.find(word);
-                
-                if (globalEntry == null) {
-                    // If this word is not in the index, we can already answer.
-                    return new ArrayList<>();
-                    
-                } else {
-                    // If it was in the index, we get its associated inverted list.
-                    potentialEmails.add(globalEntry.toTreeSet());
-                }
+            } else {
+                // If it was in the index, we get its associated inverted list.
+                potentialEmails.add(globalEntry.toTreeSet());
             }
         }
         

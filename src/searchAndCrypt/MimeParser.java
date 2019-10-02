@@ -265,7 +265,7 @@ public class MimeParser {
      * Reads an e-mail in the MIME format, and ouput the String that will be
      * taken into account for the indexation.
      */
-    public static String parseNewMimeMessage(File file) {
+    public static String parseMimeMessage(File file) {
         StringBuilder stringBuilder = new StringBuilder();
         try (FileInputStream fis = new FileInputStream(file)) {
             // Parse the MIME message from textual representation to mime4j.dom.Message representation.
