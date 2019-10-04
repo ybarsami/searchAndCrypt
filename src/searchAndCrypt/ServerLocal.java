@@ -27,7 +27,7 @@ import java.util.TreeSet;
  *
  * @author yann
  */
-public class ServerTest extends Server {
+public class ServerLocal extends Server {
     
     // The folder where the test datasets are located, relatively to the home
     // path of the library.
@@ -94,9 +94,9 @@ public class ServerTest extends Server {
     
     
     /**
-     * Creates a new instance of ServerTest.
+     * Creates a new instance of ServerLocal.
      */
-    public ServerTest(MailSet mailsType) {
+    public ServerLocal(MailSet mailsType) {
         fileNameIndex = "test_";
         fileExtension = "txt";
         nbIndexChunks = 0;
@@ -116,7 +116,7 @@ public class ServerTest extends Server {
         MailSet[] mailsTypes = { MAILS_TEST1 };//, MAILS_TEST2 };
         List<Server> serverList = new ArrayList<>();
         for (MailSet mailsType : mailsTypes) {
-            serverList.add(new ServerTest(mailsType));
+            serverList.add(new ServerLocal(mailsType));
         }
         return serverList;
     }
@@ -238,8 +238,8 @@ public class ServerTest extends Server {
      */
     @Override
     public List<Integer> getRemovedMailIds() {
-        // WARNING: ServerTest is a *static* Server that does not handle dynamic
-        // removal of e-mails.
+        // WARNING: ServerLocal is a *static* Server that does not handle
+        // dynamic removal of e-mails.
         return new ArrayList<>();
     }
     
@@ -456,8 +456,8 @@ public class ServerTest extends Server {
      */
     @Override
     public void updateMap() {
-        // WARNING: ServerTest is a *static* Server that does not handle dynamic
-        // removal of e-mails.
+        // WARNING: ServerLocal is a *static* Server that does not handle
+        // dynamic removal of e-mails.
         // This function thus just handles the base case where we compute the
         // map from scratch.
         File tempFile = new File(fileNameBijection);
@@ -477,7 +477,7 @@ public class ServerTest extends Server {
      */
     @Override
     public void compressMap() {
-        // WARNING: ServerTest is a *static* Server that does not handle dynamic
-        // removal of e-mails.
+        // WARNING: ServerLocal is a *static* Server that does not handle
+        // dynamic removal of e-mails.
     }
 }

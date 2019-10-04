@@ -33,7 +33,7 @@ public class SearchAndCrypt {
         // not.
         boolean hasToRequest = true;
         
-        List<Server> testServers = ServerTest.getTestServers();
+        List<Server> testServers = ServerLocal.getTestServers();
         
         for (Server server : testServers) {
             final Client client = new Client(server, indexType);
