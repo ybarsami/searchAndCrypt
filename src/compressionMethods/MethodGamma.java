@@ -14,9 +14,7 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
-import static compressionMethods.Tools.*;
+import static compressionMethods.IntegerTools.*;
 
 /**
  *
@@ -30,8 +28,8 @@ public class MethodGamma extends MethodByElement {
     }
 
     @Override
-    public int readCode(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        return readCodeGamma(in, currentBits, nbCurrentBitsRead);
+    public int readCode(BitStream bitStream) {
+        return readCodeGamma(bitStream);
     }
     
     public static void writeCodeGamma(int x, BitSequence buffer) {
@@ -41,9 +39,9 @@ public class MethodGamma extends MethodByElement {
         MethodBinary.writeCodeBinary(residual, buffer, ilog2x);
     }
     
-    public static int readCodeGamma(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        int ilog2x = MethodUnary.readCodeUnary(in, currentBits, nbCurrentBitsRead) - 1;
-        int residual = MethodBinary.readCodeBinary(in, currentBits, nbCurrentBitsRead, ilog2x);
+    public static int readCodeGamma(BitStream bitStream) {
+        int ilog2x = MethodUnary.readCodeUnary(bitStream) - 1;
+        int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
         return residual + (1 << ilog2x);
     }
 

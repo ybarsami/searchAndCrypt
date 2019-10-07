@@ -9,8 +9,6 @@ import java.io.DataInputStream;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 
-import static compressionMethods.Tools.*;
-
 /**
  *
  * @author yann
@@ -39,22 +37,20 @@ public abstract class MethodByElement extends MethodByBitSequence {
         }
         return buffer;
     }
-
+    
     /*
      * Write the code of x inside the BitSequence.
      */
     public abstract void writeCode(int x, BitSequence buffer);
-
+    
     @Override
-    public final ArrayIntList readMailList(DataInputStream in, int nbMailsLocal) {
+    public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
-        int[] currentBits = new int[nbBitsPerByte];
-        int[] nbCurrentBitsRead = { nbBitsPerByte };
         int idMail = 0;
         int nbMailsTreated = 0;
         while (nbMailsTreated < nbMailsLocal) {
             // Extract a gap.
-            int gap = readCode(in, currentBits, nbCurrentBitsRead);
+            int gap = readCode(bitStream);
             // Add the gap to the mail list.
             idMail += gap;
             mailList.add(idMail);
@@ -62,15 +58,10 @@ public abstract class MethodByElement extends MethodByBitSequence {
         }
         return mailList;
     }
-
+    
     /*
-     * Read the code of an integer which starts at position
-     * nbCurrentBitsRead[0] inside the array currentBits (of size 8).
-     * Update nbBitsRead[0] according to the number of bits read for this
-     * integer.
-     * If we reach the end of the array currentBits, we read a new set of 8
-     * bits from the dataInputStream.
+     * Read the code of an integer from the given bit input stream.
      */
-    public abstract int readCode(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead);
+    public abstract int readCode(BitStream bitStream);
 
 }

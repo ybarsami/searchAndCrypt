@@ -9,10 +9,6 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
-import static compressionMethods.Tools.*;
-
 /**
  *
  * @author yann
@@ -25,8 +21,8 @@ public class MethodUnary extends MethodByElement {
     }
 
     @Override
-    public int readCode(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        return readCodeUnary(in, currentBits, nbCurrentBitsRead);
+    public int readCode(BitStream bitStream) {
+        return readCodeUnary(bitStream);
     }
     
     public static void writeCodeUnary(int x, BitSequence buffer) {
@@ -36,17 +32,12 @@ public class MethodUnary extends MethodByElement {
         buffer.append(false);
     }
     
-    public static int readCodeUnary(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
+    public static int readCodeUnary(BitStream bitStream) {
         int value = 0;
         boolean hasReadAZero = false;
         while (!hasReadAZero) {
-            // If there are no more bits to read, read a new byte in the file.
-            if (nbCurrentBitsRead[0] == nbBitsPerByte) {
-                nbCurrentBitsRead[0] = 0;
-                readByteFromFile(in, currentBits);
-            }
             // Extract a bit.
-            int bitRead = currentBits[nbCurrentBitsRead[0]++];
+            int bitRead = bitStream.getNextBit();
             if (bitRead == 1) {
                 value++;
             } else {

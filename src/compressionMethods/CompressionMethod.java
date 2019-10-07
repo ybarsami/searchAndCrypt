@@ -13,7 +13,7 @@ public abstract class CompressionMethod {
     
     public static CompressionMethod createCompressionMethod(String indexType, int nbMails) {
         switch(indexType) {
-            case "ASCII":
+            case "binary32":
                 return new MethodBinary32();
             case "binary":
                 return new MethodBinary(nbMails);
@@ -41,12 +41,12 @@ public abstract class CompressionMethod {
      * the given compression method. All the numbers in the mailList are
      * supposed to be in sorted order.
      */
-    public abstract void writeMailList(DataOutputStream out, ArrayIntList mailList);
+    public abstract void writeMailList(DataOutputStream dataOutputStream, ArrayIntList mailList);
     
     /*
      * Read a dataInputStream to extract nbMailsLocal mails encoded with the
      * given compression method.
      */
-    public abstract ArrayIntList readMailList(DataInputStream in, int nbMailsLocal);
+    public abstract ArrayIntList readMailList(DataInputStream dataInputStream, int nbMailsLocal);
 
 }

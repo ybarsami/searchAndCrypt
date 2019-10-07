@@ -77,7 +77,7 @@ public class BitSequenceTest {
         assertArrayEquals(expResult, result);
         // Value more than 128
         instance = new BitSequence();
-        instance.append(true, Tools.nbBitsPerByte);
+        instance.append(true, BitInputStream.nbBitsPerByte);
         expResult = new byte[1];
         expResult[0] = (byte)255;
         result = instance.toByteArray();
@@ -192,7 +192,7 @@ public class BitSequenceTest {
         assertEquals(expResult, result);
         // Value more than 128
         instance = new BitSequence();
-        instance.append(true, Tools.nbBitsPerByte);
+        instance.append(true, BitInputStream.nbBitsPerByte);
         expResult = "11111111";
         result = instance.toString();
         assertEquals(expResult, result);

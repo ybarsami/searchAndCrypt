@@ -17,10 +17,10 @@ import org.apache.commons.collections.primitives.ArrayIntList;
 public class MethodBinary32 extends CompressionMethod {
     
     @Override
-    public final void writeMailList(DataOutputStream out, ArrayIntList mailList) {
+    public final void writeMailList(DataOutputStream dataOutputStream, ArrayIntList mailList) {
         try {
             for (int i = 0; i < mailList.size(); i++) {
-                out.writeInt(mailList.get(i));
+                dataOutputStream.writeInt(mailList.get(i));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,11 +28,11 @@ public class MethodBinary32 extends CompressionMethod {
     }
 
     @Override
-    public ArrayIntList readMailList(DataInputStream in, int nbMailsLocal) {
+    public ArrayIntList readMailList(DataInputStream dataInputStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
         try {
             for (int j = 0; j < nbMailsLocal; j++) {
-                int idMail = in.readInt();
+                int idMail = dataInputStream.readInt();
                 mailList.add(idMail);
             }
         } catch (IOException e) {

@@ -26,12 +26,10 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
 
-import static compressionMethods.Tools.*;
+import static compressionMethods.IntegerTools.*;
 
 /**
  *
@@ -59,15 +57,13 @@ public class MethodInterpolative extends MethodByBitSequence {
         writeListCodeInterpolative(buffer, mailList, size, 1, nbMails);
         return buffer;
     }
-
+    
     @Override
-    public final ArrayIntList readMailList(DataInputStream in, int nbMailsLocal) {
+    public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
         int lo = 1;
         int hi = nbMails;
-        int[] currentBits = new int[nbBitsPerByte];
-        int[] nbCurrentBitsRead = { nbBitsPerByte };
-        readCodeListInterpolative(in, currentBits, nbCurrentBitsRead, mailList, nbMailsLocal, lo, hi);
+        readCodeListInterpolative(bitStream, mailList, nbMailsLocal, lo, hi);
         return mailList;
     }
     
@@ -99,33 +95,32 @@ public class MethodInterpolative extends MethodByBitSequence {
         MethodBinary.writeCodeBinary(x - lo, buffer, ceilingLog2(hi - lo + 1));
     }
     
-    private static void readCodeListInterpolative(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead, ArrayIntList mailList,
-            int f, int lo, int hi) {
+    private static void readCodeListInterpolative(BitStream bitStream, ArrayIntList mailList, int f, int lo, int hi) {
         switch (f) {
             case 0:
                 return;
             case 1:
                 {
-                    int m = readCodeBinary(in, currentBits, nbCurrentBitsRead, lo, hi);
+                    int m = readCodeBinary(bitStream, lo, hi);
                     mailList.add(m);
                     break;
                 }
             default:
                 {
                     int h = f / 2;
-                    int m = readCodeBinary(in, currentBits, nbCurrentBitsRead, lo + h, hi - (f - h - 1));
-                    readCodeListInterpolative(in, currentBits, nbCurrentBitsRead, mailList, h, lo, m - 1);
+                    int m = readCodeBinary(bitStream, lo + h, hi - (f - h - 1));
+                    readCodeListInterpolative(bitStream, mailList, h, lo, m - 1);
                     mailList.add(m);
-                    readCodeListInterpolative(in, currentBits, nbCurrentBitsRead, mailList, f - h - 1, m + 1, hi);
+                    readCodeListInterpolative(bitStream, mailList, f - h - 1, m + 1, hi);
                     break;
                 }
         }
     }
     
-    private static int readCodeBinary(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead, int lo, int hi) {
+    private static int readCodeBinary(BitStream bitStream, int lo, int hi) {
         // The number of bits we have to read for the current int to extract.
         int nbBitsToRead = ceilingLog2(hi - lo + 1);
-        return MethodBinary.readCodeBinary(in, currentBits, nbCurrentBitsRead, nbBitsToRead) + lo;
+        return MethodBinary.readCodeBinary(bitStream, nbBitsToRead) + lo;
     }
 
 }

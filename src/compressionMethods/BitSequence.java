@@ -29,12 +29,23 @@ public class BitSequence {
         lastPosition = -1;
     }
     
+    ////////////////////////////////////////////////////////////////////////////
+    // Accessor methods
+    ////////////////////////////////////////////////////////////////////////////
+    
     /*
      * The number of bits in the BitSequence. Because indexes start at 0, it
      * is thus just lastPosition + 1.
      */
     public int nbBits() {
         return lastPosition + 1;
+    }
+    
+    /*
+     * Returns the value of the bit with the specified index.
+     */
+    public boolean get(int i) {
+        return bitSet.get(i);
     }
     
     /*
@@ -54,6 +65,19 @@ public class BitSequence {
         }
         return bytes;
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= lastPosition; i++) {
+            sb.append(bitSet.get(i) ? '1' : '0');
+        }
+        return sb.toString();
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Modifying methods
+    ////////////////////////////////////////////////////////////////////////////
     
     /*
      * Append {@code true} to the bit sequence.
@@ -94,14 +118,5 @@ public class BitSequence {
         for (int i = 0; i < nbPositions; i++) {
             append(value);
         }
-    }
-    
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i <= lastPosition; i++) {
-            sb.append(bitSet.get(i) ? '1' : '0');
-        }
-        return sb.toString();
     }
 }

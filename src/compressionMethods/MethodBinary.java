@@ -9,9 +9,7 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
-import static compressionMethods.Tools.*;
+import static compressionMethods.IntegerTools.*;
 
 /**
  *
@@ -41,8 +39,8 @@ public class MethodBinary extends MethodByElement {
     }
 
     @Override
-    public int readCode(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        return readCodeBinary(in, currentBits, nbCurrentBitsRead, nbBits);
+    public int readCode(BitStream bitStream) {
+        return readCodeBinary(bitStream, nbBits);
     }
     
     /*
@@ -57,18 +55,13 @@ public class MethodBinary extends MethodByElement {
         }
     }
     
-    public static int readCodeBinary(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead, int nbBitsToRead) {
+    public static int readCodeBinary(BitStream bitStream, int nbBitsToRead) {
         // The number of bits read *for the current int to extract*.
         int nbBitsRead = 0;
         int value = 0;
         while (nbBitsRead < nbBitsToRead) {
-            // If there are no more bits to read, read a new byte in the file.
-            if (nbCurrentBitsRead[0] == nbBitsPerByte) {
-                nbCurrentBitsRead[0] = 0;
-                readByteFromFile(in, currentBits);
-            }
             // Extract a bit.
-            int bitRead = currentBits[nbCurrentBitsRead[0]++];
+            int bitRead = bitStream.getNextBit();
             value *= 2;
             value += bitRead;
             nbBitsRead++;

@@ -4,6 +4,7 @@
 
 package compressionMethods;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -16,11 +17,11 @@ import org.apache.commons.collections.primitives.ArrayIntList;
 public abstract class MethodByBitSequence extends CompressionMethod {
     
     @Override
-    public final void writeMailList(DataOutputStream out, ArrayIntList mailList) {
+    public final void writeMailList(DataOutputStream dataOutputStream, ArrayIntList mailList) {
         try {
             BitSequence buffer = bitSequenceOfMailList(mailList);
             for (byte b : buffer.toByteArray()) {
-                out.writeByte(b);
+                dataOutputStream.writeByte(b);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,5 +33,21 @@ public abstract class MethodByBitSequence extends CompressionMethod {
      * numbers in the mailList are supposed to be in sorted order.
      */
     public abstract BitSequence bitSequenceOfMailList(ArrayIntList mailList);
+    
+    @Override
+    public final ArrayIntList readMailList(DataInputStream dataInputStream, int nbMailsLocal) {
+        BitInputStream bitInputStream = new BitInputStream(dataInputStream);
+        return readMailList(bitInputStream, nbMailsLocal);
+    }
+    
+    /*
+     * Output the mailList encoded in the given BitSequence.
+     */
+    public final ArrayIntList readMailList(BitSequence bitSequence, int nbMailsLocal) {
+        BitSequenceStream bitSequenceStream = new BitSequenceStream(bitSequence);
+        return readMailList(bitSequenceStream, nbMailsLocal);
+    }
+    
+    public abstract ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal);
     
 }

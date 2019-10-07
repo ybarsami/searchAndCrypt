@@ -11,9 +11,7 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
-import static compressionMethods.Tools.*;
+import static compressionMethods.IntegerTools.*;
 
 /**
  *
@@ -27,8 +25,8 @@ public class MethodDelta extends MethodByElement {
     }
 
     @Override
-    public int readCode(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        return readCodeDelta(in, currentBits, nbCurrentBitsRead);
+    public int readCode(BitStream bitStream) {
+        return readCodeDelta(bitStream);
     }
     
     public static void writeCodeDelta(int x, BitSequence buffer) {
@@ -38,9 +36,9 @@ public class MethodDelta extends MethodByElement {
         MethodBinary.writeCodeBinary(residual, buffer, ilog2x);
     }
     
-    public static int readCodeDelta(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {
-        int ilog2x = MethodGamma.readCodeGamma(in, currentBits, nbCurrentBitsRead) - 1;
-        int residual = MethodBinary.readCodeBinary(in, currentBits, nbCurrentBitsRead, ilog2x);
+    public static int readCodeDelta(BitStream bitStream) {
+        int ilog2x = MethodGamma.readCodeGamma(bitStream) - 1;
+        int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
         return residual + (1 << ilog2x);
     }
 
