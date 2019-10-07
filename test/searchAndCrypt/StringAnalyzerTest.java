@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package searchAndCrypt;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -63,17 +59,17 @@ public class StringAnalyzerTest {
         System.out.println("analyzeNewString");
         StringAnalyzer instance;
         String toBeAnalyzed;
-        List<String> expResult, result;
+        Set<String> expResult, result;
         // English stemming
         instance = new StringAnalyzer("english");
-        toBeAnalyzed = "word words";
-        expResult = Arrays.asList("word word".split(" "));
+        toBeAnalyzed = "word words analyze analyzing";
+        expResult = new HashSet<>(Arrays.asList("word analyz".split(" ")));
         result = instance.analyzeNewString(toBeAnalyzed);
         assertEquals(expResult, result);
         // French stemming
         instance = new StringAnalyzer("french");
-        toBeAnalyzed = "mot mots";
-        expResult = Arrays.asList("mot mot".split(" "));
+        toBeAnalyzed = "mot mots analyser analysant";
+        expResult = new HashSet<>(Arrays.asList("mot analys".split(" ")));
         result = instance.analyzeNewString(toBeAnalyzed);
         assertEquals(expResult, result);
     }

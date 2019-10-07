@@ -8,6 +8,7 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -39,7 +40,7 @@ public class Request {
      * @return the list of e-mails that match the request.
      */
     public List<File> search(String requestedString) {
-        List<String> requestedWords = stringAnalyzer.analyzeNewString(requestedString);
+        Set<String> requestedWords = stringAnalyzer.analyzeNewString(requestedString);
         
         // Get rid of empty requests.
         if (requestedWords.isEmpty()) {

@@ -8,6 +8,7 @@ package searchAndCrypt;
 import java.io.File;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -83,7 +84,7 @@ public class Client {
         final TreeSet<Integer> allMessageIdentifiers = server.getAllMessageIdentifiers(maxIdIndexedMail);
         for (int i : allMessageIdentifiers) {
             String toBeAnalyzed = MimeParser.parseMimeMessage(server.getMessage(i));
-            List<String> toBeIndexed = stringAnalyzer.analyzeNewString(toBeAnalyzed);
+            Set<String> toBeIndexed = stringAnalyzer.analyzeNewString(toBeAnalyzed);
             for (String word: toBeIndexed) {
                 globalIndex.updateWithNewWord(word, i);
             }

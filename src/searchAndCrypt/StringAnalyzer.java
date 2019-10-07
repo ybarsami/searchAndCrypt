@@ -4,9 +4,8 @@
 
 package searchAndCrypt;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -48,17 +47,18 @@ public class StringAnalyzer {
      * We have a new string to analyze.
      *
      * @param toBeIndexed, the string to be analyzed.
+     * @return the set of stemmed words contained in this string.
      */
-    public List<String> analyzeNewString(String toBeAnalyzed) {
+    public Set<String> analyzeNewString(String toBeAnalyzed) {
         return Pattern.compile(" +")
             .splitAsStream(StringNormalizer.normalize(toBeAnalyzed))
             .map(wordStemmer)
             .filter(word -> !word.equals(""))
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
     
     /*
-     * Sets a language to be used by the stemmer.
+     * Creates a stemmer according to the chosen language.
      *
      * @param language, the String representing the language on which the
      * stemmer will work.
@@ -66,6 +66,7 @@ public class StringAnalyzer {
      * danish, dutch, english, finnish, french, german, hungarian, italian,
      * norwegian, porter, portuguese, romanian, russian, spanish, swedish,
      * turkish.
+     * @return the SnowballStemmer of this language.
      */
     public static final SnowballStemmer getSnowballStemmer(String language) {
         try {

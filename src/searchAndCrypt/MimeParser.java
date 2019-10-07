@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 
-import java.util.Collections;
 import java.util.Date; // For the date header.
 import java.util.List;
 
@@ -100,165 +99,154 @@ public class MimeParser {
     }
     
     /*
-     * We parse the header to extract relevant parts from it.
+     * We parse a field to extract relevant parts from it.
      *
-     * @param header, the header to index.
-     * @param stringBuilder, the StringBuilder in which we store the relevant
-     * parts of the message.
+     * @param field, the field to parse.
+     * @return the String that contains the relevant parts of the field.
      */
-    private static void takeInformation(Header header, StringBuilder stringBuilder) {
-        if (header == null) {
-            return;
-        }
-        
-        // This is how you get the fields.
-        for (Field field : header.getFields()) {
-            if (field instanceof AddressListField) {
-                // An address field (From, To, Cc, etc.)
-                MailboxList list = ((AddressListField) field).getAddressList().flatten();
-                StringBuilder sb = new StringBuilder();
-                for (Mailbox mailbox : list) {
-                    sb.append(AddressFormatter.DEFAULT.format(mailbox, false)).append("\n");
-                }
-                stringBuilder.append(sb.toString());
-                
-            } else if (field instanceof DateTimeField) {
-                // A date and time field.
-                Date date = ((DateTimeField) field).getDate();
-                if (date != null) {
-                    stringBuilder.append(date.toString()).append("\n");
-                }
-                
-            } else if (field instanceof MailboxField) {
-                // An address field (From, To, Cc, etc.)
-                Mailbox mailbox = ((MailboxField) field).getMailbox();
-                stringBuilder.append(AddressFormatter.DEFAULT.format(mailbox, false));
-                
-            } else if (field instanceof MailboxListField) {
-                // An address field (From, To, Cc, etc.)
-                MailboxList list = ((MailboxListField) field).getMailboxList();
-                StringBuilder sb = new StringBuilder();
-                for (Mailbox mailbox : list) {
-                    sb.append(AddressFormatter.DEFAULT.format(mailbox, false)).append("\n");
-                }
-                stringBuilder.append(sb.toString());
-                
-            } else if (field instanceof UnstructuredField) {
-                // An unstructured field.
-                // Index the subject field.
-                if (field.getName() != null &&
-                        field.getName().equalsIgnoreCase("Subject")) {
-                    stringBuilder.append(((UnstructuredField) field).getValue()).append("\n");
-                }
-                
-            } else {
-                // It can be either ContentDescriptionField, ContentDispositionField,
-                // ContentIdField, ContentLanguageField, ContentLengthField,
-                // ContentLocationField, ContentMD5Field, ContentTransferEncodingField,
-                // ContentTypeField or MimeVersionField.
-                // In those cases, do not index.
+    private static String parseField(Field field) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (field instanceof AddressListField) {
+            // An address field (From, To, Cc, etc.)
+            MailboxList list = ((AddressListField) field).getAddressList().flatten();
+            StringBuilder sb = new StringBuilder();
+            for (Mailbox mailbox : list) {
+                sb.append(AddressFormatter.DEFAULT.format(mailbox, false)).append("\n");
             }
+            stringBuilder.append(sb.toString());
+
+        } else if (field instanceof DateTimeField) {
+            // A date and time field.
+            Date date = ((DateTimeField) field).getDate();
+            if (date != null) {
+                stringBuilder.append(date.toString()).append("\n");
+            }
+
+        } else if (field instanceof MailboxField) {
+            // An address field (From, To, Cc, etc.)
+            Mailbox mailbox = ((MailboxField) field).getMailbox();
+            stringBuilder.append(AddressFormatter.DEFAULT.format(mailbox, false));
+
+        } else if (field instanceof MailboxListField) {
+            // An address field (From, To, Cc, etc.)
+            MailboxList list = ((MailboxListField) field).getMailboxList();
+            StringBuilder sb = new StringBuilder();
+            for (Mailbox mailbox : list) {
+                sb.append(AddressFormatter.DEFAULT.format(mailbox, false)).append("\n");
+            }
+            stringBuilder.append(sb.toString());
+
+        } else if (field instanceof UnstructuredField) {
+            // An unstructured field.
+            // Get the subject field.
+            if (field.getName() != null &&
+                    field.getName().equalsIgnoreCase("Subject")) {
+                stringBuilder.append(((UnstructuredField) field).getValue()).append("\n");
+            }
+
+        } else {
+            // It can be either ContentDescriptionField, ContentDispositionField,
+            // ContentIdField, ContentLanguageField, ContentLengthField,
+            // ContentLocationField, ContentMD5Field, ContentTransferEncodingField,
+            // ContentTypeField or MimeVersionField.
+            // In those cases, ignore it.
         }
+        return stringBuilder.toString();
     }
     
     /*
-     * We parse the header to extract relevant parts from it.
-     * Here, we know that the entity is either a Message or a Body part, because
-     * it is not a Header (it would call the previous takeInformation function).
+     * We parse a header to extract relevant parts from it.
+     *
+     * @param header, the header to parse.
+     * @return the String that contains the relevant parts of the header.
+     */
+    private static String parseHeader(Header header) {
+        if (header == null) {
+            return "";
+        }
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        // This is how you get the fields.
+        for (Field field : header.getFields()) {
+            stringBuilder.append(parseField(field));
+        }
+        return stringBuilder.toString();
+    }
+    
+    /*
+     * We read a text body and convert it to a string.
+     *
+     * @param textBody, the text body to read.
+     * @return the String that contains the text of this body.
+     */
+    private static String stringFromTextBody(TextBody textBody) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        Reader r = textBody.getReader();
+        int c;
+        while ((c = r.read()) != -1) {
+            sb.append((char) c);
+        }
+        return sb.toString();
+    }
+    
+    /*
+     * We parse the entity to extract relevant parts from it.
      *
      * @param entity, the entity to index.
-     * @param stringBuilder, the StringBuilder in which we store the relevant
-     * parts of the message.
+     * @return the String that contains the relevant parts of the entity.
      */
-    private static void takeInformation(Entity entity, StringBuilder stringBuilder) {
-        // This is how you get the header.
-        takeInformation(entity.getHeader(), stringBuilder);
+    private static String parseEntity(Entity entity) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        // Parse the header.
+        stringBuilder.append(parseHeader(entity.getHeader()));
         
-        // This is how you get the body.
+        // Parse the body.
         Body body = entity.getBody();
-        
         if (body instanceof Multipart) {
             // The body of the entity is a Multipart.
+            // Ignore the preamble and the epilogue, only parse the body parts.
             Multipart multipart = (Multipart) body;
-            
-            // The preamble can be ignored.
-            
             List<Entity> bodyParts = multipart.getBodyParts();
-            
-            if (multipart.getSubType().equals("alternative")) {
-                // multipart/alternative message. If this is a text/plain + text/html,
-                // only index the html version, so we remove the text/plain version.
-                if (bodyParts.size() == 2) {
-                    ContentSet content0 = MimeParser.getContent(bodyParts.get(0));
-                    ContentSet content1 = MimeParser.getContent(bodyParts.get(1));
-                    if (content0 == ContentSet.CONTENT_TYPE_TEXT_PLAIN &&
-                            content1 == ContentSet.CONTENT_TYPE_TEXT_HTML) {
-                        // Most probable case, plain should be before html.
-                        // See https://tools.ietf.org/html/rfc2046#section-5.1.4
-                        bodyParts = Collections.singletonList(bodyParts.get(1));
-                        
-                    } else if (content1 == ContentSet.CONTENT_TYPE_TEXT_PLAIN &&
-                            content0 == ContentSet.CONTENT_TYPE_TEXT_HTML) {
-                        // In case the html version was put before the plain text.
-                        bodyParts = Collections.singletonList(bodyParts.get(0));
-                    }
-                }
-            }
-            
-            // Index the needed body parts.
             for (Entity part : bodyParts) {
-                takeInformation(part, stringBuilder);
+                stringBuilder.append(parseEntity(part));
             }
-            
-            // The epilogue can be ignored.
             
         } else if (body instanceof MessageImpl) {
             // The body of the entity is another Message.
-            takeInformation((MessageImpl) body, stringBuilder);
+            stringBuilder.append(parseEntity((MessageImpl) body));
             
         } else if (body instanceof TextBody) {
-            // A text body. Index its contents.
+            // A text body.
             TextBody textBody = (TextBody) body;
-            StringBuilder sb = new StringBuilder();
-            try {
-                Reader r = textBody.getReader();
-                int c;
-                while ((c = r.read()) != -1) {
-                    sb.append((char) c);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            final String stringBody = stringFromTextBody(textBody);
             
             // Checks if this is text/html or text/plain or if it is an attached file.
             ContentSet content = MimeParser.getContent(entity);
-            String extractedText = "";
             switch (content) {
                 case CONTENT_TYPE_TEXT_HTML:
                     // For text/html, extract the text from html with Jsoup.
-                    extractedText = Jsoup.parse(sb.toString()).text();
+                    String htmlParsed = Jsoup.parse(stringBody).text();
+                    stringBuilder.append(htmlParsed).append("\n");
                     break;
                     
                 case CONTENT_DISPOSITION_ATTACHMENT:
-                    // For attached files, do not index.
+                    // Ignore attached files.
                     break;
                     
                 case CONTENT_OTHER:
-                    // It might happen that a message do not have a Content-Type header.
-                    // (20 of my personal e-mails fall in this category and still have to be indexed)
-                    // In that case, treat it as text/plain.
+                    // It might happen that a message do not have a Content-Type
+                    // header. In that case, treat it as text/plain.
                 case CONTENT_TYPE_TEXT_PLAIN:
-                    // For text/plain, just index the string.
-                    extractedText = sb.toString();
+                    // For text/plain, just return the text.
+                    stringBuilder.append(stringBody).append("\n");
                     break;
             }
             
-            stringBuilder.append(extractedText).append("\n");
-            
         } else if (body instanceof BinaryBody) {
             // A binary body.
-            // Do not index.
+            // Ignore it.
         }
+        return stringBuilder.toString();
     }
     
     /*
@@ -272,14 +260,13 @@ public class MimeParser {
             final Message message = builder.parse(fis).build();
             
             // Update the string builder with the content of the message.
-            takeInformation(message, stringBuilder);
+            stringBuilder.append(parseEntity(message));
 
         } catch(FileNotFoundException e) {
             System.out.println("Unable to open file '" + file.getName() + "'.");
 
         } catch (IOException e) {
             System.out.println("IOException in file '" + file.getName() + "'.");
-            e.printStackTrace();
         }
         return stringBuilder.toString(); 
     }

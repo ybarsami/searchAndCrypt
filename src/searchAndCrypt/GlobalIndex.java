@@ -112,14 +112,13 @@ public class GlobalIndex {
             this.add(addedEntry);
             
         } else {
-            // If it was already in the index, we update its associated entry.
-            // Add the mail to the associated list, if it's not already there.
-            // Here we use the fact that we treat the mails one by one, so if
-            // this message is already in the list, it is in last position.
-            // (we do not need to go through the mails in any particular order)
-            if (oldEntry.mailList.get(oldEntry.mailList.size() - 1) != idMessage) {
-                oldEntry.mailList.add(idMessage);
-            }
+            // If it was already in the index, we update its associated entry
+            // (add the mail to the associated list).
+            // Here, we use the fact that when analyzing a String, we return a
+            // set of words. Hence, for a given couple(word, idMessage), we will
+            // not call this function twice. Thus, we do not need to check if
+            // idMessage was previously added in the list.
+            oldEntry.mailList.add(idMessage);
         }
     }
     
