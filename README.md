@@ -71,6 +71,8 @@ containing the libraries on which this one depends.
 
 **src:** the source files of this library.
 
+**test:** the unit tests of this library.
+
 
 ## The inverted index: a simple example ##
 
