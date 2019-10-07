@@ -32,7 +32,15 @@ public class StringAnalyzer {
                 ? word -> word
                 : word -> {
                     stemmer.setCurrent(word);
-                    return stemmer.stem() ? stemmer.getCurrent() : null;
+                    // stemmer.stem() is a boolean, but, quoting Olly Betts:
+                    // "The return value is just the last signal from the
+                    // Snowball program, so if it's false then execution didn't
+                    // reach the very end of the `stem` function.  But for the
+                    // current stemmers, that doesn't indicate an error (or
+                    // indeed anything at all)."
+                    // So we can just discard the return boolean value.
+                    stemmer.stem();
+                    return stemmer.getCurrent();
                 };
     }
     
@@ -45,7 +53,7 @@ public class StringAnalyzer {
         return Pattern.compile(" +")
             .splitAsStream(StringNormalizer.normalize(toBeAnalyzed))
             .map(wordStemmer)
-            .filter(word -> word != null)
+            .filter(word -> !word.equals(""))
             .collect(Collectors.toList());
     }
     
