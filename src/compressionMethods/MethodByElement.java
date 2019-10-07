@@ -15,7 +15,7 @@ import static compressionMethods.Tools.*;
  *
  * @author yann
  */
-public abstract class MethodByElement extends MethodByBitSet {
+public abstract class MethodByElement extends MethodByBitSequence {
     
     public static ArrayIntList gapList(ArrayIntList mailList) {
         ArrayIntList gapList = new ArrayIntList();
@@ -27,12 +27,12 @@ public abstract class MethodByElement extends MethodByBitSet {
     }
     
     /*
-     * Output a BitSet encoding the numbers included in mailList. All the
+     * Output a BitSequence encoding the numbers included in mailList. All the
      * numbers in the mailList are supposed to be in sorted order.
      */
     @Override
-    public final BitSetWithLastPosition bitSetOfMailList(ArrayIntList mailList) {
-        BitSetWithLastPosition buffer = new BitSetWithLastPosition();
+    public final BitSequence bitSequenceOfMailList(ArrayIntList mailList) {
+        BitSequence buffer = new BitSequence();
         ArrayIntList gapList = gapList(mailList);
         for (int i = 0; i < mailList.size(); i++) {
             writeCode(gapList.get(i), buffer);
@@ -41,9 +41,9 @@ public abstract class MethodByElement extends MethodByBitSet {
     }
 
     /*
-     * Write the code of x inside the BitSet.
+     * Write the code of x inside the BitSequence.
      */
-    public abstract void writeCode(int x, BitSetWithLastPosition buffer);
+    public abstract void writeCode(int x, BitSequence buffer);
 
     @Override
     public final ArrayIntList readMailList(DataInputStream in, int nbMailsLocal) {

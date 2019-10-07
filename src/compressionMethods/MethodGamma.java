@@ -25,7 +25,7 @@ import static compressionMethods.Tools.*;
 public class MethodGamma extends MethodByElement {
 
     @Override
-    public void writeCode(int x, BitSetWithLastPosition buffer) {
+    public void writeCode(int x, BitSequence buffer) {
         writeCodeGamma(x, buffer);
     }
 
@@ -34,7 +34,7 @@ public class MethodGamma extends MethodByElement {
         return readCodeGamma(in, currentBits, nbCurrentBitsRead);
     }
     
-    public static void writeCodeGamma(int x, BitSetWithLastPosition buffer) {
+    public static void writeCodeGamma(int x, BitSequence buffer) {
         int ilog2x = ilog2(x);
         MethodUnary.writeCodeUnary(1 + ilog2(x), buffer);
         int residual = x - (1 << ilog2x);

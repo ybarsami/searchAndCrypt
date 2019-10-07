@@ -22,7 +22,7 @@ import static compressionMethods.Tools.*;
 public class MethodDelta extends MethodByElement {
 
     @Override
-    public void writeCode(int x, BitSetWithLastPosition buffer) {
+    public void writeCode(int x, BitSequence buffer) {
         writeCodeDelta(x, buffer);
     }
 
@@ -31,7 +31,7 @@ public class MethodDelta extends MethodByElement {
         return readCodeDelta(in, currentBits, nbCurrentBitsRead);
     }
     
-    public static void writeCodeDelta(int x, BitSetWithLastPosition buffer) {
+    public static void writeCodeDelta(int x, BitSequence buffer) {
         int ilog2x = ilog2(x);
         MethodGamma.writeCodeGamma(1 + ilog2x, buffer);
         int residual = x - (1 << ilog2x);

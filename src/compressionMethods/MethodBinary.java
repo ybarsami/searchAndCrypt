@@ -36,7 +36,7 @@ public class MethodBinary extends MethodByElement {
     }
 
     @Override
-    public void writeCode(int x, BitSetWithLastPosition buffer) {
+    public void writeCode(int x, BitSequence buffer) {
         writeCodeBinary(x, buffer, nbBits);
     }
 
@@ -49,10 +49,10 @@ public class MethodBinary extends MethodByElement {
      * Writes x on just nbBits bits.
      * Assumes that 0 <= x < 2^nbBits.
      */
-    public  static void writeCodeBinary(int x, BitSetWithLastPosition buffer, int nbBits) {
+    public  static void writeCodeBinary(int x, BitSequence buffer, int nbBits) {
         int bitMask = 1 << (nbBits - 1);
         for (int j = 0; j < nbBits; j++) {
-            buffer.setEnd((x & bitMask) != 0);
+            buffer.append((x & bitMask) != 0);
             bitMask >>= 1;
         }
     }

@@ -20,7 +20,7 @@ import static compressionMethods.Tools.*;
 public class MethodUnary extends MethodByElement {
 
     @Override
-    public void writeCode(int x, BitSetWithLastPosition buffer) {
+    public void writeCode(int x, BitSequence buffer) {
         writeCodeUnary(x, buffer);
     }
 
@@ -29,11 +29,11 @@ public class MethodUnary extends MethodByElement {
         return readCodeUnary(in, currentBits, nbCurrentBitsRead);
     }
     
-    public static void writeCodeUnary(int x, BitSetWithLastPosition buffer) {
+    public static void writeCodeUnary(int x, BitSequence buffer) {
         // x - 1 "1"
-        buffer.setEnd(x - 1);
+        buffer.append(true, x - 1);
         // One "0"
-        buffer.clearEnd();
+        buffer.append(false);
     }
     
     public static int readCodeUnary(DataInputStream in, int[] currentBits, int[] nbCurrentBitsRead) {

@@ -13,12 +13,12 @@ import org.apache.commons.collections.primitives.ArrayIntList;
  *
  * @author yann
  */
-public abstract class MethodByBitSet extends CompressionMethod {
+public abstract class MethodByBitSequence extends CompressionMethod {
     
     @Override
     public final void writeMailList(DataOutputStream out, ArrayIntList mailList) {
         try {
-            BitSetWithLastPosition buffer = bitSetOfMailList(mailList);
+            BitSequence buffer = bitSequenceOfMailList(mailList);
             for (byte b : buffer.toByteArray()) {
                 out.writeByte(b);
             }
@@ -28,9 +28,9 @@ public abstract class MethodByBitSet extends CompressionMethod {
     }
     
     /*
-     * Output a BitSet encoding the numbers included in mailList. All the
+     * Output a BitSequence encoding the numbers included in mailList. All the
      * numbers in the mailList are supposed to be in sorted order.
      */
-    public abstract BitSetWithLastPosition bitSetOfMailList(ArrayIntList mailList);
+    public abstract BitSequence bitSequenceOfMailList(ArrayIntList mailList);
     
 }

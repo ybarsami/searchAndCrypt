@@ -54,7 +54,7 @@ public class Tools {
     // Number representation utils
     ////////////////////////////////////////////////////////////////////////////
     
-    // In BitSetWithLastPosition, we output the bytes in big endian.
+    // In BitSequence, we output the bytes in big endian.
     // This is the "reverse" function, that reads a byte and output an array of
     // 8 bits.
     public static void readByteFromFile(DataInputStream in, int[] currentBits) {

@@ -37,7 +37,7 @@ import static compressionMethods.Tools.*;
  *
  * @author yann
  */
-public class MethodInterpolative extends MethodByBitSet {
+public class MethodInterpolative extends MethodByBitSequence {
 
     /*
      * When using this method, each of the mail identifiers has to be less
@@ -53,9 +53,9 @@ public class MethodInterpolative extends MethodByBitSet {
     }
 
     @Override
-    public final BitSetWithLastPosition bitSetOfMailList(ArrayIntList mailList) {
+    public final BitSequence bitSequenceOfMailList(ArrayIntList mailList) {
         int size = mailList.size();
-        BitSetWithLastPosition buffer = new BitSetWithLastPosition();
+        BitSequence buffer = new BitSequence();
         writeListCodeInterpolative(buffer, mailList, size, 1, nbMails);
         return buffer;
     }
@@ -71,7 +71,7 @@ public class MethodInterpolative extends MethodByBitSet {
         return mailList;
     }
     
-    private static void writeListCodeInterpolative(BitSetWithLastPosition buffer, IntList mailList, int f, int lo, int hi) {
+    private static void writeListCodeInterpolative(BitSequence buffer, IntList mailList, int f, int lo, int hi) {
         switch (f) {
             case 0:
                 return;
@@ -95,7 +95,7 @@ public class MethodInterpolative extends MethodByBitSet {
      * Writes x on just ceiling(log_2(hi - lo + 1)) bits.
      * Assumes that lo <= x <= hi.
      */
-    private static void writeCodeBinary(int x, BitSetWithLastPosition buffer, int lo, int hi) {
+    private static void writeCodeBinary(int x, BitSequence buffer, int lo, int hi) {
         MethodBinary.writeCodeBinary(x - lo, buffer, ceilingLog2(hi - lo + 1));
     }
     
