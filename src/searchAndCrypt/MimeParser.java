@@ -58,8 +58,6 @@ public class MimeParser {
      * > text/html (we parse it with jsoup and extract the result)
      * > attachments (we do not extract if)
      * Other kinds of content are treated as text/plain.
-     * N.B.: If a MIME message is a multipart/alternative, we just extract the
-     * text/html version.
      */
     private static enum ContentSet {
         CONTENT_TYPE_TEXT_PLAIN,
@@ -69,9 +67,7 @@ public class MimeParser {
     };
     
     /*
-     * We want to know which kind of content is in the given entity. We do not
-     * explore every kind of content, we just check for text/plain, text/html,
-     * or attachment.
+     * We want to know which kind of content is in the given entity.
      *
      * @param entity, the entity to check.
      * @return the content type of this entity.
