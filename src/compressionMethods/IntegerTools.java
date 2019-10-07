@@ -23,13 +23,18 @@ public class IntegerTools {
      * x must be >= 1.
      */
     public static int ceilingLog2(int x) {
+        assert(x >= 1);
         return ilog2(x - 1) + 1;
     }
     
     /*
      * Returns the ceiling of x / y.
+     * x must be >= 0.
+     * y must be >= 1.
      */
     public static int ceilingDivision(int x, int y) {
+        assert(x >= 0);
+        assert(y >= 1);
         return (x + y - 1) / y;
     }
     
@@ -39,6 +44,7 @@ public class IntegerTools {
      * x must be >= 0.
      */
     public static int ilog2(int x) {
+        assert(x >= 0);
         return 31 - Integer.numberOfLeadingZeros(x);
     }
 }
