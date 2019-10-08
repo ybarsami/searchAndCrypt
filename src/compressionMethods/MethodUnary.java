@@ -2,7 +2,7 @@
  * Index compression with the unary method.
  *
  * Witten, Moffat, Bell, "Managing Gigabytes" (1999), p. 117
- * One such code is the unary code. In this code an integer x > 1 is coded
+ * One such code is the unary code. In this code an integer x >= 1 is coded
  * as x - 1 one bits followed by a zero bit, so that the code for integer 3
  * is 110.
  */
@@ -26,6 +26,7 @@ public class MethodUnary extends MethodByElement {
     }
     
     public static void writeCodeUnary(int x, BitSequence buffer) {
+        assert(x >= 1);
         // x - 1 "1"
         buffer.append(true, x - 1);
         // One "0"

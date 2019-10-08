@@ -21,8 +21,8 @@ public class MethodBinary extends MethodByElement {
      * ceiling(log nbMails), the minimal number of bits to store numbers in
      * { 1, 2, ... nbMails }.
      */
-    private int nbBits;
-
+    private final int nbBits;
+    
     /**
      * Creates a new instance of MethodBinary.
      * 
@@ -32,39 +32,39 @@ public class MethodBinary extends MethodByElement {
     public MethodBinary(int nbMails) {
         this.nbBits = ceilingLog2(nbMails);
     }
-
+    
     @Override
     public void writeCode(int x, BitSequence buffer) {
-        writeCodeBinary(x, buffer, nbBits);
+        writeCodeBinary(x - 1, buffer, nbBits);
     }
-
+    
     @Override
     public int readCode(BitStream bitStream) {
-        return readCodeBinary(bitStream, nbBits);
+        return readCodeBinary(bitStream, nbBits) + 1;
     }
     
     /*
-     * Writes x on just nbBits bits.
-     * Assumes that 0 <= x < 2^nbBits.
+     * Writes x on just nbBitsToWrite bits.
+     * Assumes that 0 <= x < 2^nbBitsToWrite.
      */
-    public  static void writeCodeBinary(int x, BitSequence buffer, int nbBits) {
-        int bitMask = 1 << (nbBits - 1);
-        for (int j = 0; j < nbBits; j++) {
+    public  static void writeCodeBinary(int x, BitSequence buffer, int nbBitsToWrite) {
+        assert(nbBitsToWrite >= 0);
+        assert(x >= 0);
+        assert(x < (1 << nbBitsToWrite));
+        int bitMask = 1 << (nbBitsToWrite - 1);
+        for (int j = 0; j < nbBitsToWrite; j++) {
             buffer.append((x & bitMask) != 0);
             bitMask >>= 1;
         }
     }
     
     public static int readCodeBinary(BitStream bitStream, int nbBitsToRead) {
-        // The number of bits read *for the current int to extract*.
-        int nbBitsRead = 0;
         int value = 0;
-        while (nbBitsRead < nbBitsToRead) {
+        for (int j = 0; j < nbBitsToRead; j++) {
             // Extract a bit.
             int bitRead = bitStream.getNextBit();
             value *= 2;
             value += bitRead;
-            nbBitsRead++;
         }
         return value;
     }

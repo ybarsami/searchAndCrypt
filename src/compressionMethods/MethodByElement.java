@@ -5,8 +5,6 @@
 
 package compressionMethods;
 
-import java.io.DataInputStream;
-
 import org.apache.commons.collections.primitives.ArrayIntList;
 
 /**

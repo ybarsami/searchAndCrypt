@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package compressionMethods;
 
 import org.junit.After;
@@ -100,6 +95,20 @@ public class IntegerToolsTest {
         expResult = 2;
         result = IntegerTools.ceilingDivision(x, y);
         assertEquals(expResult, result);
+        // 8/0 = undefined
+        x = 8;
+        y = 0;
+        try {
+            result = IntegerTools.ceilingDivision(x, y);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
+        // -XXX/YYY = undefined
+        x = -42;
+        y = 8;
+        try {
+            result = IntegerTools.ceilingDivision(x, y);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
     }
 
     /**
