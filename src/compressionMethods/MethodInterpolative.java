@@ -41,7 +41,7 @@ public class MethodInterpolative extends MethodByBitSequence {
      * When using this method, each of the mail identifiers has to be less
      * or equal than nbMails.
      */
-    private int nbMails;
+    private final int nbMails;
 
     /**
      * Creates a new instance of MethodInterpolative.

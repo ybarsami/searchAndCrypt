@@ -15,9 +15,9 @@ import static org.junit.Assert.*;
  *
  * @author yann
  */
-public class MethodUnaryTest {
+public class MethodGammaTest {
     
-    public MethodUnaryTest() {
+    public MethodGammaTest() {
     }
     
     @BeforeClass
@@ -37,25 +37,25 @@ public class MethodUnaryTest {
     }
 
     /**
-     * Test of writeCode method, of class MethodUnary.
+     * Test of writeCode method, of class MethodGamma.
      */
     @Test
     public void testWriteCode() {
         System.out.println("writeCode");
-        MethodUnary instance = new MethodUnary();
+        MethodGamma instance = new MethodGamma();
         BitSequence buffer;
         String result, expResult;
         HashMap<Integer, String> map = new HashMap<>();
         map.put( 1, "0");
-        map.put( 2, "10");
-        map.put( 3, "110");
-        map.put( 4, "1110");
-        map.put( 5, "11110");
-        map.put( 6, "111110");
-        map.put( 7, "1111110");
-        map.put( 8, "11111110");
-        map.put( 9, "111111110");
-        map.put(10, "1111111110");
+        map.put( 2, "100");
+        map.put( 3, "101");
+        map.put( 4, "11000");
+        map.put( 5, "11001");
+        map.put( 6, "11010");
+        map.put( 7, "11011");
+        map.put( 8, "1110000");
+        map.put( 9, "1110001");
+        map.put(10, "1110010");
         // Writing 1..10
         for (int x : map.keySet()) {
             expResult = map.get(x);
@@ -75,12 +75,12 @@ public class MethodUnaryTest {
     }
 
     /**
-     * Test of readCode method, of class MethodUnary.
+     * Test of readCode method, of class MethodGamma.
      */
     @Test
     public void testReadCode() {
         System.out.println("readCode");
-        MethodUnary instance = new MethodUnary();
+        MethodGamma instance = new MethodGamma();
         int result, expResult;
         BitSequence buffer;
         BitStream bitStream;
@@ -95,29 +95,29 @@ public class MethodUnaryTest {
     }
 
     /**
-     * Test of writeCodeUnary method, of class MethodUnary.
+     * Test of writeCodeGamma method, of class MethodGamma.
      */
     @Test
-    public void testWriteCodeUnary() {
-        System.out.println("writeCodeUnary");
+    public void testWriteCodeGamma() {
+        System.out.println("writeCodeGamma");
         BitSequence buffer;
         String result, expResult;
         HashMap<Integer, String> map = new HashMap<>();
         map.put( 1, "0");
-        map.put( 2, "10");
-        map.put( 3, "110");
-        map.put( 4, "1110");
-        map.put( 5, "11110");
-        map.put( 6, "111110");
-        map.put( 7, "1111110");
-        map.put( 8, "11111110");
-        map.put( 9, "111111110");
-        map.put(10, "1111111110");
+        map.put( 2, "100");
+        map.put( 3, "101");
+        map.put( 4, "11000");
+        map.put( 5, "11001");
+        map.put( 6, "11010");
+        map.put( 7, "11011");
+        map.put( 8, "1110000");
+        map.put( 9, "1110001");
+        map.put(10, "1110010");
         // Writing 1..10
         for (int x : map.keySet()) {
             expResult = map.get(x);
             buffer = new BitSequence();
-            MethodUnary.writeCodeUnary(x, buffer);
+            MethodGamma.writeCodeGamma(x, buffer);
             result = buffer.toString();
             assertEquals(expResult, result);
         }
@@ -126,38 +126,38 @@ public class MethodUnaryTest {
         x = 0;
         buffer = new BitSequence();
         try {
-            MethodUnary.writeCodeUnary(x, buffer);
+            MethodGamma.writeCodeGamma(x, buffer);
             fail("This should not be executed.");
         } catch(AssertionError e) {}
     }
 
     /**
-     * Test of readCodeUnary method, of class MethodUnary.
+     * Test of readCodeGamma method, of class MethodGamma.
      */
     @Test
-    public void testReadCodeUnary() {
-        System.out.println("readCodeUnary");
+    public void testReadCodeGamma() {
+        System.out.println("readCodeGamma");
         int result, expResult;
         BitSequence buffer;
         BitStream bitStream;
         // Writing and reading 1..42
         for (expResult = 1; expResult < 43; expResult++) {
             buffer = new BitSequence();
-            MethodUnary.writeCodeUnary(expResult, buffer);
+            MethodGamma.writeCodeGamma(expResult, buffer);
             bitStream = new BitSequenceStream(buffer);
-            result = MethodUnary.readCodeUnary(bitStream);
+            result = MethodGamma.readCodeGamma(bitStream);
             assertEquals(expResult, result);
         }
     }
 
     /**
-     * Full test to test that the unary code is a bijection.
+     * Full test to test that the gamma code is a bijection.
      */
     @Test
     public void testBijection() {
         System.out.println("bijection");
 //        int nbMails = 15747;
-        MethodUnary instance = new MethodUnary();
+        MethodGamma instance = new MethodGamma();
         ArrayIntList mailListInput = new ArrayIntList();
         int[] expResult = new int[] { 84, 85, 510, 941, 946, 965, 978, 1008, 1009, 1774, 1862, 2248, 2254, 2755, 2756, 3494, 3495, 3716, 4428, 4462, 4676, 5218, 5219, 5430, 5455, 5470, 6007, 6229, 6408, 6467, 6500, 6601, 6654, 6850, 7757, 8261, 8262, 8263, 8264, 8265, 8324, 8359, 8423, 8438, 8808, 9413, 9739, 9885, 10512, 10766, 10842, 10962, 11124, 11140, 11141, 11188, 11222, 11780, 12146, 12148, 12415, 12455, 12456, 12644, 12736, 13643, 14131, 14153, 14172, 14239, 14240, 14250, 14254, 14262, 14596, 14860, 15032, 15033, 15042, 15043, 15428 };
         int nbMailsInput = expResult.length;

@@ -20,13 +20,14 @@ public class MethodBinary32 extends CompressionMethod {
     public final void writeMailList(DataOutputStream dataOutputStream, ArrayIntList mailList) {
         try {
             for (int i = 0; i < mailList.size(); i++) {
-                dataOutputStream.writeInt(mailList.get(i));
+                int idMail = mailList.get(i);
+                dataOutputStream.writeInt(idMail);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
     @Override
     public ArrayIntList readMailList(DataInputStream dataInputStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();

@@ -1,5 +1,9 @@
 package compressionMethods;
 
+import java.util.HashMap;
+
+import org.apache.commons.collections.primitives.ArrayIntList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,37 +44,22 @@ public class MethodBinaryTest {
         System.out.println("writeCode");
         int nbMails = 4;
         MethodBinary instance = new MethodBinary(nbMails);
-        int x;
         BitSequence buffer;
         String result, expResult;
-        // Writing 1
-        x = 1;
-        expResult = "00";
-        buffer = new BitSequence();
-        instance.writeCode(x, buffer);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 2
-        x = 2;
-        expResult = "01";
-        buffer = new BitSequence();
-        instance.writeCode(x, buffer);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 3
-        x = 3;
-        expResult = "10";
-        buffer = new BitSequence();
-        instance.writeCode(x, buffer);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 4
-        x = 4;
-        expResult = "11";
-        buffer = new BitSequence();
-        instance.writeCode(x, buffer);
-        result = buffer.toString();
-        assertEquals(expResult, result);
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(1, "00");
+        map.put(2, "01");
+        map.put(3, "10");
+        map.put(4, "11");
+        // Writing 1..4
+        for (int x : map.keySet()) {
+            expResult = map.get(x);
+            buffer = new BitSequence();
+            instance.writeCode(x, buffer);
+            result = buffer.toString();
+            assertEquals(expResult, result);
+        }
+        int x;
         // Trying to write 0
         x = 0;
         buffer = new BitSequence();
@@ -93,39 +82,19 @@ public class MethodBinaryTest {
     @Test
     public void testReadCode() {
         System.out.println("readCode");
-        int nbMails = 4;
+        int nbMails = 32;
         MethodBinary instance = new MethodBinary(nbMails);
         int result, expResult;
         BitSequence buffer;
         BitStream bitStream;
-        // Writing and reading 1
-        expResult = 1;
-        buffer = new BitSequence();
-        instance.writeCode(expResult, buffer);
-        bitStream = new BitSequenceStream(buffer);
-        result = instance.readCode(bitStream);
-        assertEquals(expResult, result);
-        // Writing and reading 2
-        expResult = 2;
-        buffer = new BitSequence();
-        instance.writeCode(expResult, buffer);
-        bitStream = new BitSequenceStream(buffer);
-        result = instance.readCode(bitStream);
-        assertEquals(expResult, result);
-        // Writing and reading 3
-        expResult = 3;
-        buffer = new BitSequence();
-        instance.writeCode(expResult, buffer);
-        bitStream = new BitSequenceStream(buffer);
-        result = instance.readCode(bitStream);
-        assertEquals(expResult, result);
-        // Writing and reading 4
-        expResult = 4;
-        buffer = new BitSequence();
-        instance.writeCode(expResult, buffer);
-        bitStream = new BitSequenceStream(buffer);
-        result = instance.readCode(bitStream);
-        assertEquals(expResult, result);
+        // Writing and reading 1..nbMails
+        for (expResult = 1; expResult <= nbMails; expResult++) {
+            buffer = new BitSequence();
+            instance.writeCode(expResult, buffer);
+            bitStream = new BitSequenceStream(buffer);
+            result = instance.readCode(bitStream);
+            assertEquals(expResult, result);
+        }
     }
 
     /**
@@ -135,37 +104,22 @@ public class MethodBinaryTest {
     public void testWriteCodeBinary() {
         System.out.println("writeCodeBinary");
         int nbBitsToWrite = 2;
-        int x;
         BitSequence buffer;
         String result, expResult;
-        // Writing 0
-        x = 0;
-        expResult = "00";
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 1
-        x = 1;
-        expResult = "01";
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 2
-        x = 2;
-        expResult = "10";
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
-        result = buffer.toString();
-        assertEquals(expResult, result);
-        // Writing 3
-        x = 3;
-        expResult = "11";
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
-        result = buffer.toString();
-        assertEquals(expResult, result);
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(0, "00");
+        map.put(1, "01");
+        map.put(2, "10");
+        map.put(3, "11");
+        // Writing 0..3
+        for (int x : map.keySet()) {
+            expResult = map.get(x);
+            buffer = new BitSequence();
+            MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
+            result = buffer.toString();
+            assertEquals(expResult, result);
+        }
+        int x;
         // Trying to write -1
         x = -1;
         buffer = new BitSequence();
@@ -188,38 +142,43 @@ public class MethodBinaryTest {
     @Test
     public void testReadCodeBinary() {
         System.out.println("readCodeBinary");
-        int nbBits = 2;
+        int nbBits = 5;
         int result, expResult;
         BitSequence buffer;
         BitStream bitStream;
-        // Writing and reading 0
-        expResult = 0;
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
-        bitStream = new BitSequenceStream(buffer);
-        result = MethodBinary.readCodeBinary(bitStream, nbBits);
-        assertEquals(expResult, result);
-        // Writing and reading 1
-        expResult = 1;
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
-        bitStream = new BitSequenceStream(buffer);
-        result = MethodBinary.readCodeBinary(bitStream, nbBits);
-        assertEquals(expResult, result);
-        // Writing and reading 2
-        expResult = 2;
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
-        bitStream = new BitSequenceStream(buffer);
-        result = MethodBinary.readCodeBinary(bitStream, nbBits);
-        assertEquals(expResult, result);
-        // Writing and reading 3
-        expResult = 3;
-        buffer = new BitSequence();
-        MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
-        bitStream = new BitSequenceStream(buffer);
-        result = MethodBinary.readCodeBinary(bitStream, nbBits);
-        assertEquals(expResult, result);
+        // Writing and reading 0..31
+        for (expResult = 0; expResult < 32; expResult++) {
+            buffer = new BitSequence();
+            MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
+            bitStream = new BitSequenceStream(buffer);
+            result = MethodBinary.readCodeBinary(bitStream, nbBits);
+            assertEquals(expResult, result);
+        }
+    }
+
+    /**
+     * Full test to test that the binary code is a bijection.
+     */
+    @Test
+    public void testBijection() {
+        System.out.println("bijection");
+        int nbMails = 15747;
+        MethodBinary instance = new MethodBinary(nbMails);
+        ArrayIntList mailListInput = new ArrayIntList();
+        int[] expResult = new int[] { 84, 85, 510, 941, 946, 965, 978, 1008, 1009, 1774, 1862, 2248, 2254, 2755, 2756, 3494, 3495, 3716, 4428, 4462, 4676, 5218, 5219, 5430, 5455, 5470, 6007, 6229, 6408, 6467, 6500, 6601, 6654, 6850, 7757, 8261, 8262, 8263, 8264, 8265, 8324, 8359, 8423, 8438, 8808, 9413, 9739, 9885, 10512, 10766, 10842, 10962, 11124, 11140, 11141, 11188, 11222, 11780, 12146, 12148, 12415, 12455, 12456, 12644, 12736, 13643, 14131, 14153, 14172, 14239, 14240, 14250, 14254, 14262, 14596, 14860, 15032, 15033, 15042, 15043, 15428 };
+        int nbMailsInput = expResult.length;
+        for (int i = 0; i < nbMailsInput; i++) {
+            mailListInput.add(expResult[i]);
+        }
+        BitSequence bitSequence = instance.bitSequenceOfMailList(mailListInput);
+        BitSequenceStream bitSequenceStream = new BitSequenceStream(bitSequence);
+        ArrayIntList mailListOutput = instance.readMailList(bitSequenceStream, nbMailsInput);
+        int nbMailsOutput = mailListOutput.size();
+        int[] result = new int[nbMailsOutput];
+        for (int i = 0; i < nbMailsOutput; i++) {
+            result[i] = mailListOutput.get(i);
+        }
+        assertArrayEquals(expResult, result);
     }
     
 }
