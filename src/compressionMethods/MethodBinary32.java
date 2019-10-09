@@ -41,5 +41,15 @@ public class MethodBinary32 extends CompressionMethod {
         }
         return mailList;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodBinary32;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodBinary32.class.getName().hashCode();
+    }
 
 }

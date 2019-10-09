@@ -29,7 +29,7 @@ public class BitInputStream extends BitStream {
     public BitInputStream(DataInputStream dataInputStream) {
         this.dataInputStream = dataInputStream;
         this.currentBits = new int[nbBitsPerByte];
-        this.nbCurrentBitsRead = 0;
+        this.nbCurrentBitsRead = nbBitsPerByte;
     }
     
     public static final int nbBitsPerByte = 8;

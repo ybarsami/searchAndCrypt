@@ -68,5 +68,16 @@ public class MethodBinary extends MethodByElement {
         }
         return value;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodBinary &&
+                ((MethodBinary)o).nbBits == this.nbBits;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodBinary.class.getName().hashCode();
+    }
 
 }

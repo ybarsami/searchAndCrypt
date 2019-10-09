@@ -9,7 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  *
@@ -52,7 +51,7 @@ public class Request {
         globalIndex.importFromFile(indexFile, indexType);
         
         // For each stemmed word from the request, put its inverted list.
-        ArrayList<TreeSet<Integer>> potentialEmails = new ArrayList<>();
+        ArrayList<Set<Integer>> potentialEmails = new ArrayList<>();
         
         for (String word: requestedWords) {
             // Check if this word is in the index.
@@ -64,12 +63,12 @@ public class Request {
                 
             } else {
                 // If it was in the index, we get its associated inverted list.
-                potentialEmails.add(globalEntry.toTreeSet());
+                potentialEmails.add(globalEntry.toSet());
             }
         }
         
         // Intersection of the inverted lists.
-        TreeSet<Integer> blocAnswers = potentialEmails.get(0);
+        Set<Integer> blocAnswers = potentialEmails.get(0);
         for (int i = 1; i < potentialEmails.size(); i++) {
             blocAnswers.retainAll(potentialEmails.get(i));
         }

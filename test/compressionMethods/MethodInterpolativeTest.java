@@ -37,6 +37,14 @@ public class MethodInterpolativeTest {
     @After
     public void tearDown() {
     }
+    
+    private ArrayIntList intArray2arrayIntList(int[] intArray) {
+        ArrayIntList arrayIntList = new ArrayIntList();
+        for (int i = 0; i < intArray.length; i++) {
+            arrayIntList.add(intArray[i]);
+        }
+        return arrayIntList;
+    }
 
     /**
      * Test of bitSequenceOfMailList method, of class MethodInterpolative.
@@ -51,42 +59,11 @@ public class MethodInterpolativeTest {
         int[] mailArray;
         BitSequence bitSequence;
         
-        // { 3 } in [1..7]
-        nbMails = 7;
-        instance = new MethodInterpolative(nbMails);
-        mailList = new ArrayIntList();
-        mailArray = new int[] { 3 };
-        for (int i = 0; i < mailArray.length; i++) {
-            mailList.add(mailArray[i]);
-        }
-        bitSequence = instance.bitSequenceOfMailList(mailList);
-        result = bitSequence.toString();
-        // 3 in [1; 7] -> we need to code 3-1 = 2 on ceiling(log_2(7-1+1)) = 3 bits -> 010.
-        expResult = "010";
-        assertEquals(expResult, result);
-        
-        // { 1 } in [1..2]
-        nbMails = 2;
-        instance = new MethodInterpolative(nbMails);
-        mailList = new ArrayIntList();
-        mailArray = new int[] { 1 };
-        for (int i = 0; i < mailArray.length; i++) {
-            mailList.add(mailArray[i]);
-        }
-        bitSequence = instance.bitSequenceOfMailList(mailList);
-        result = bitSequence.toString();
-        // 1 in [1; 2] -> we need to code 1-1 = 0 on ceiling(log_2(2-1+1)) = 1 bit -> 0.
-        expResult = "0";
-        assertEquals(expResult, result);
-        
         // { 3, 8, 9 } in [1..10]
         nbMails = 10;
         instance = new MethodInterpolative(nbMails);
-        mailList = new ArrayIntList();
         mailArray = new int[] { 3, 8, 9 };
-        for (int i = 0; i < mailArray.length; i++) {
-            mailList.add(mailArray[i]);
-        }
+        mailList = intArray2arrayIntList(mailArray);
         bitSequence = instance.bitSequenceOfMailList(mailList);
         result = bitSequence.toString();
         // 8 is the pointer n°1 in the 3-pointer list, we hence code 8 in [1 + 1; 10 - (3 - 1 - 1)],
@@ -100,11 +77,8 @@ public class MethodInterpolativeTest {
         // { 1, 2, 6 } in [1..9]
         nbMails = 9;
         instance = new MethodInterpolative(nbMails);
-        mailList = new ArrayIntList();
         mailArray = new int[] { 1, 2, 6 };
-        for (int i = 0; i < mailArray.length; i++) {
-            mailList.add(mailArray[i]);
-        }
+        mailList = intArray2arrayIntList(mailArray);
         bitSequence = instance.bitSequenceOfMailList(mailList);
         result = bitSequence.toString();
         // 2 is the pointer n°1 in the 3-pointer list, we hence code 2 in [1 + 1; 9 - (3 - 1 - 1)],
@@ -118,11 +92,8 @@ public class MethodInterpolativeTest {
         // { 3, 8, 9, 11, 12, 13, 17 } in [1..20]
         nbMails = 20;
         instance = new MethodInterpolative(nbMails);
-        mailList = new ArrayIntList();
         mailArray = new int[] { 3, 8, 9, 11, 12, 13, 17 };
-        for (int i = 0; i < mailArray.length; i++) {
-            mailList.add(mailArray[i]);
-        }
+        mailList = intArray2arrayIntList(mailArray);
         bitSequence = instance.bitSequenceOfMailList(mailList);
         result = bitSequence.toString();
         // 11 is the pointer n°3 in the 7-pointer list, we hence code 11 in [1 + 3; 20 - (7 - 3 - 1)],
@@ -132,6 +103,26 @@ public class MethodInterpolativeTest {
         //     - and { 12, 13, 17 } in the range [12..20] -> { 1, 2, 6 } in the range [1..9]
         expResult = "0111" + "1100100" + "000011";
         assertEquals(expResult, result);
+        
+        // Trying to convert list with identifiers bigger than nbMails
+        nbMails = 4;
+        instance = new MethodInterpolative(nbMails);
+        mailArray = new int[] { 3, 8, 9, 11, 12, 13, 17 };
+        mailList = intArray2arrayIntList(mailArray);
+        try {
+            bitSequence = instance.bitSequenceOfMailList(mailList);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
+        
+        // Trying to convert unsorted list
+        nbMails = 20;
+        instance = new MethodInterpolative(nbMails);
+        mailArray = new int[] { 3, 8, 9, 11, 12, 17, 13 };
+        mailList = intArray2arrayIntList(mailArray);
+        try {
+            bitSequence = instance.bitSequenceOfMailList(mailList);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
     }
 
     /**

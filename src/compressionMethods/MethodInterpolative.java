@@ -39,31 +39,34 @@ public class MethodInterpolative extends MethodByBitSequence {
 
     /*
      * When using this method, each of the mail identifiers has to be less
-     * or equal than nbMails.
+     * or equal than nbMails, and the list of identifiers has to be in strict
+     * ascending order.
      */
     private final int nbMails;
-
+    
     /**
      * Creates a new instance of MethodInterpolative.
      */
     public MethodInterpolative(int nbMails) {
         this.nbMails = nbMails;
     }
-
+    
     @Override
     public final BitSequence bitSequenceOfMailList(ArrayIntList mailList) {
-        int size = mailList.size();
+        int nbMailsLocal = mailList.size();
+        for (int i = 0; i < nbMailsLocal - 1; i++) {
+            assert(mailList.get(i) < mailList.get(i+1));
+        }
+        assert(mailList.get(nbMailsLocal - 1) <= this.nbMails);
         BitSequence buffer = new BitSequence();
-        writeListCodeInterpolative(buffer, mailList, size, 1, nbMails);
+        writeListCodeInterpolative(buffer, mailList, nbMailsLocal, 1, this.nbMails);
         return buffer;
     }
     
     @Override
     public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
-        int lo = 1;
-        int hi = nbMails;
-        readCodeListInterpolative(bitStream, mailList, nbMailsLocal, lo, hi);
+        readCodeListInterpolative(bitStream, mailList, nbMailsLocal, 1, this.nbMails);
         return mailList;
     }
     
@@ -121,6 +124,17 @@ public class MethodInterpolative extends MethodByBitSequence {
         // The number of bits we have to read for the current int to extract.
         int nbBitsToRead = ceilingLog2(hi - lo + 1);
         return MethodBinary.readCodeBinary(bitStream, nbBitsToRead) + lo;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodInterpolative &&
+                ((MethodInterpolative)o).nbMails == this.nbMails;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodInterpolative.class.getName().hashCode();
     }
 
 }

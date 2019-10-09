@@ -41,5 +41,15 @@ public class MethodDelta extends MethodByElement {
         int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
         return residual + (1 << ilog2x);
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodDelta;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodDelta.class.getName().hashCode();
+    }
 
 }

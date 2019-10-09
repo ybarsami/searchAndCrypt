@@ -44,5 +44,15 @@ public class MethodGamma extends MethodByElement {
         int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
         return residual + (1 << ilog2x);
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodGamma;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodGamma.class.getName().hashCode();
+    }
 
 }

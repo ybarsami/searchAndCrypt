@@ -47,5 +47,15 @@ public class MethodUnary extends MethodByElement {
         }
         return value + 1;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof MethodUnary;
+    }
+    
+    @Override
+    public int hashCode() {
+        return MethodUnary.class.getName().hashCode();
+    }
 
 }

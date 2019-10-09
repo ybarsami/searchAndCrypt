@@ -4,7 +4,7 @@
 
 package searchAndCrypt;
 
-import java.util.Comparator;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
@@ -33,7 +33,11 @@ public class GlobalEntry implements Comparable<GlobalEntry> {
         this("");
     }
     
-    public TreeSet<Integer> toTreeSet() {
+    /*
+     * Converts the mail list of this entry to a set. This is useful for common
+     * set operations, such as intersection, etc.
+     */
+    public Set<Integer> toSet() {
         final TreeSet<Integer> treeSet = new TreeSet<>();
         for (int i = 0; i < mailList.size(); i++) {
             treeSet.add(mailList.get(i));
@@ -42,16 +46,7 @@ public class GlobalEntry implements Comparable<GlobalEntry> {
     }
     
     @Override
-    public String toString() { return name; }
-    
-    @Override
     public int compareTo(GlobalEntry e) {
         return name.compareTo(e.name);
     }
-    
-    public static final Comparator<GlobalEntry> comparatorOnNames =
-            (GlobalEntry e1, GlobalEntry e2) -> e1.name.compareTo(e2.name);
-    
-    public static final Comparator<GlobalEntry> comparatorOnOccurrences =
-            (GlobalEntry e1, GlobalEntry e2) -> e1.mailList.size() - e2.mailList.size();
 }

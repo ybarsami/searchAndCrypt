@@ -23,10 +23,12 @@ public abstract class CompressionMethod {
                 return new MethodGamma();
             case "interpolative":
                 return new MethodInterpolative(nbMails);
+            case "unary":
+                return new MethodUnary();
             default:
                 System.out.println(indexType + " is not a valid index type.");
                 System.out.println("Valid index types are: binary32, binary, "
-                        + "delta, gamma, interpolative.");
+                        + "delta, gamma, interpolative, unary.");
                 return null;
         }
     }
