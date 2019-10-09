@@ -291,7 +291,16 @@ public class GlobalIndex {
     }
     
     
-    // TEST PURPOSES ONLY --- EXPORTS THE INDEX IN HUMAN READABLE FORM
+    /*
+     * Export to ASCII file --- human readable form.
+     * Structure of the file :
+     *     - the number of words in the index
+     *     - the number of emails in the database
+     *     - for each word in the index:
+     *         - the word
+     *         - the number of emails that contain this word
+     *         - the identifiers of emails containing this word
+     */
     public File exportToFileASCII(String filename) {
         try (FileWriter out = new FileWriter(filename)) {
             out.write("# Inverted index : for each word, the ids of documents that contain this word" +

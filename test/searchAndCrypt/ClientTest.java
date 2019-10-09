@@ -1,8 +1,17 @@
 package searchAndCrypt;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.algorithm.DiffException;
+import com.github.difflib.patch.Patch;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,9 +23,9 @@ import static org.junit.Assert.*;
  *
  * @author yann
  */
-public class RequestTest {
+public class ClientTest {
     
-    public RequestTest() {
+    public ClientTest() {
     }
     
     @BeforeClass
@@ -36,7 +45,89 @@ public class RequestTest {
     }
 
     /**
-     * Test of search method, of class Request.
+     * Test of exportToFile method, of class Client.
+     */
+    @Test
+    public void testExportToFile() {
+        System.out.println("exportToFile");
+        Server server;
+        String indexType;
+        Client instance;
+        // allen-p dataset
+        server = new ServerLocal(ServerLocal.MAILS_TEST1);
+        indexType = "delta";
+        instance = new Client(server, indexType, 10000);
+//        instance.exportToFile(indexType);
+    }
+
+    /**
+     * Test of exportToChunk method, of class Client.
+     */
+    @Test
+    public void testExportToChunk() {
+        System.out.println("exportToChunk");
+        Server server;
+        String indexType;
+        Client instance;
+        // allen-p dataset
+        server = new ServerLocal(ServerLocal.MAILS_TEST1);
+        indexType = "delta";
+        instance = new Client(server, indexType, 10000);
+//        instance.exportToChunk(indexType);
+    }
+
+    /**
+     * Test of indexEverything method, of class Client.
+     */
+    @Test
+    public void testIndexEverything() {
+        System.out.println("indexEverything");
+        Server server;
+        String indexType;
+        Client instance;
+        // allen-p dataset
+        server = new ServerLocal(ServerLocal.MAILS_TEST1);
+        indexType = "delta";
+        instance = new Client(server, indexType, 10000);
+        instance.indexEverything(server, indexType);
+        File indexFile = server.getIndexFile(indexType);
+        GlobalIndex globalIndex = new GlobalIndex();
+        globalIndex.importFromFile(indexFile, indexType);
+        File result = globalIndex.exportToFileASCII("test_ASCII.txt");
+        File expResult = new File("test" + File.separatorChar + "allen-p_ASCII.txt");
+        try {
+            List<String> original = Files.readAllLines(result.toPath(), StandardCharsets.UTF_8);
+            List<String> revised = Files.readAllLines(expResult.toPath(), StandardCharsets.UTF_8);
+
+            // Compute diff. Get the Patch object. Patch is the container for computed deltas.
+            Patch<String> patch = DiffUtils.diff(original, revised);
+            assertEquals(patch.getDeltas().size(), 0);
+        } catch (IOException e) {
+            fail("IOException when testing.");
+        } catch (DiffException e) {
+            fail("DiffException when testing.");
+        }
+        result.delete();
+    }
+
+    /**
+     * Test of loadIndex method, of class Client.
+     */
+    @Test
+    public void testLoadIndex() {
+        System.out.println("loadIndex");
+        Server server;
+        String indexType;
+        Client instance;
+        // allen-p dataset
+        server = new ServerLocal(ServerLocal.MAILS_TEST1);
+        indexType = "delta";
+        instance = new Client(server, indexType, 10000);
+//        instance.loadIndex(indexType);
+    }
+
+    /**
+     * Test of search method, of class Client.
      */
     @Test
     public void testSearch() {
@@ -44,17 +135,16 @@ public class RequestTest {
         String requestedString, absoluteFolderName;
         Server server;
         String indexType;
-        Request instance;
+        Client instance;
         List<File> expResult, result;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
         indexType = "delta";
+        instance = new Client(server, indexType, 10000);
         File indexFile = server.getIndexFile(indexType);
         if (!indexFile.exists()) {
-            Client client = new Client(server, indexType, 10000);
-            client.indexEverything(server, indexType);
+            instance.indexEverything(server, indexType);
         }
-        instance = new Request(server, indexType, new StringAnalyzer("english"));
         absoluteFolderName = new File(ServerLocal.MAILS_TEST1.getFolderName()).getAbsolutePath();
         requestedString = "diminish";
         expResult = new ArrayList<>();

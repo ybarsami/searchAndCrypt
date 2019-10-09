@@ -36,7 +36,8 @@ public class SearchAndCrypt {
         List<Server> testServers = ServerLocal.getTestServers();
         
         for (Server server : testServers) {
-            final Client client = new Client(server, indexType);
+            final int nbMailsBeforeSave = 512;
+            final Client client = new Client(server, indexType, nbMailsBeforeSave);
             
             if (hasToIndex) {
                 // Create new index from scratch,

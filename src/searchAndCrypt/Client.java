@@ -22,14 +22,19 @@ public class Client {
     private final Request request;
     private GlobalIndex globalIndex;
     
+    // Number of mails we add to the index before sending a chunk of index to
+    // the server.
+    private int nbMailsBeforeSave = 512;
+    
     /**
      * Creates a new instance of Client.
      */
-    public Client(Server server, String indexType) {
+    public Client(Server server, String indexType, int nbMailsBeforeSave) {
         this.server = server;
         stringAnalyzer = new StringAnalyzer(server.getLanguage());
         request = new Request(server, indexType, stringAnalyzer);
         globalIndex = new GlobalIndex();
+        this.nbMailsBeforeSave = nbMailsBeforeSave;
     }
     
     
@@ -66,8 +71,6 @@ public class Client {
         server.addChunkedIndexFile(tmpIndexFile, indexType, globalIndex.nbMails);
         tmpIndexFile.delete();
     }
-    
-    public static int nbMailsBeforeSave = 512; //1000000;
     
     /*
      * Download the e-mails from the server that are not yet indexed, and
@@ -110,14 +113,6 @@ public class Client {
         
         // Store the full index on the server.
         server.replaceIndexWithLastChunk(indexType);
-        
-        // TEST PURPOSES ONLY
-        boolean hasToExportASCII = false;
-        if (hasToExportASCII) {
-            File indexFile = server.getIndexFile(indexType);
-            globalIndex.importFromFile(indexFile, indexType);
-            globalIndex.exportToFileASCII("test_ASCII.txt");
-        }
     }
     
     /*
