@@ -11,7 +11,7 @@ package compressionMethods;
 public class IntegerTools {
     
     /*
-     * Converts a signed byte b (-127 <= b <= 128) to an unsigned int.
+     * Converts a signed byte b (-128 <= b <= 127) to an unsigned int.
      * (if the byte is negative, adds 256).
      */
     public static int byte2int(byte b) {
