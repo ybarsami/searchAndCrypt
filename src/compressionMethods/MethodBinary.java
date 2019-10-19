@@ -21,7 +21,7 @@ public class MethodBinary extends MethodByElement {
      * ceiling(log nbMails), the minimal number of bits to store numbers in
      * { 1, 2, ... nbMails }.
      */
-    private final int nbBits;
+    private final int nbBitsPerBinaryNumber;
     
     /**
      * Creates a new instance of MethodBinary.
@@ -30,17 +30,17 @@ public class MethodBinary extends MethodByElement {
      * or equal than nbMails.
      */
     public MethodBinary(int nbMails) {
-        this.nbBits = ceilingLog2(nbMails);
+        this.nbBitsPerBinaryNumber = ceilingLog2(nbMails);
     }
     
     @Override
     public void writeCode(int x, BitSequence buffer) {
-        writeCodeBinary(x - 1, buffer, nbBits);
+        writeCodeBinary(x - 1, buffer, nbBitsPerBinaryNumber);
     }
     
     @Override
     public int readCode(BitStream bitStream) {
-        return readCodeBinary(bitStream, nbBits) + 1;
+        return readCodeBinary(bitStream, nbBitsPerBinaryNumber) + 1;
     }
     
     /*
@@ -72,7 +72,7 @@ public class MethodBinary extends MethodByElement {
     @Override
     public boolean equals(Object o) {
         return o instanceof MethodBinary &&
-                ((MethodBinary)o).nbBits == this.nbBits;
+                ((MethodBinary)o).nbBitsPerBinaryNumber == this.nbBitsPerBinaryNumber;
     }
     
     @Override

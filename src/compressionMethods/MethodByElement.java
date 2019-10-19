@@ -45,14 +45,12 @@ public abstract class MethodByElement extends MethodByBitSequence {
     public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
         int idMail = 0;
-        int nbMailsTreated = 0;
-        while (nbMailsTreated < nbMailsLocal) {
+        for (int i = 0; i < nbMailsLocal; i++) {
             // Extract a gap.
             int gap = readCode(bitStream);
-            // Add the gap to the mail list.
+            // Convert the gap to a mail id and add it to the mail list.
             idMail += gap;
             mailList.add(idMail);
-            nbMailsTreated++;
         }
         return mailList;
     }

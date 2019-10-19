@@ -1,5 +1,5 @@
 /**
-     * Index not compressed: the mail identifiers in plain int format (32 bits).
+ * Index not compressed: the mail identifiers in plain int format (32 bits).
  */
 
 package compressionMethods;
