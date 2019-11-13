@@ -10,6 +10,8 @@ package compressionMethods;
 
 import java.util.BitSet;
 
+import static compressionMethods.IntegerTools.*;
+
 /**
  *
  * @author yann
@@ -44,24 +46,32 @@ public class BitSequence {
     /*
      * Returns the value of the bit with the specified index.
      */
-    public boolean get(int i) {
-        return bitSet.get(i);
+    public boolean get(int i) throws IndexOutOfBoundsException {
+        if (i <= lastPosition) {
+            return bitSet.get(i);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
     
     /*
      * Returns a new byte array containing all the bits in this bit sequence.
-     * The bits are written in BIG_ENDIAN.
+     * The bits are written in big endian by default, but this can be modified
+     * by setting IntegerTools.isBigEndian to false.
      * 
-     * WARNING: The BitSet class internally used has a different representation,
-     * and bitSet.toByteArray() writes bits in LITTLE_ENDIAN.
+     * REMARK: The BitSet class (internally used by BitSequence) also has a
+     * toByteArray() method, that uses the little endian representation.
      * e.g. 242_{10} = 11110010_2 would be written as 01001111_2 = 79_{10}.
      */
     public byte[] toByteArray() {
-        byte[] bytes = new byte[(nbBits() + 7) / 8];       
-        for (int i = 0; i < nbBits(); i++) {
-            if (bitSet.get(i)) {
-                bytes[i / 8] |= 1 << (7 - (i % 8));
+        final int nbBytes = ceilingDivision(nbBits(), 8);
+        byte[] bytes = new byte[nbBytes];
+        final int[] bits = new int[nbBitsPerByte];
+        for (int i = 0; i < nbBytes; i++) {
+            for (int j = 0; j < nbBitsPerByte; j++) {
+                bits[j] = bitSet.get(i *nbBitsPerByte + j) ? 1 : 0;
             }
+            bytes[i] |= bitArrayToByte(bits);
         }
         return bytes;
     }

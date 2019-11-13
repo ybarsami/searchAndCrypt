@@ -2,16 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/SearchAndCrypt.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/compressionMethods/BitSetWithLastPosition.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/Server.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/MimeParser.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/Client.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/ServerLocal.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/GlobalEntry.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/searchAndCrypt/StringAnalyzer.java</file>
-            <file>file:/home/yann/Bureau/Recherche/Implems/searchAndCrypt/src/compressionMethods/Tools.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

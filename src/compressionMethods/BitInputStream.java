@@ -17,55 +17,45 @@ import static compressionMethods.IntegerTools.*;
  */
 public class BitInputStream extends BitStream {
     
-    final DataInputStream dataInputStream;
-    
-    final int[] currentBits;
-    
-    int nbCurrentBitsRead;
+    // The BitStream here comes from an external file, converted to a data input
+    // stream.
+    private final DataInputStream dataInputStream;
+    // It is not possible to directly read the file bit by bit, so we read the
+    // file byte by byte (8 bits by 8 bits). When we load a byte, we copy the 8
+    // bits inside this array...
+    private int[] currentBits;
+    // ... and we keep track of the number of bits we have already used among
+    // those 8 bits (when we reach 8, we reload a new byte, and so on).
+    private int nbCurrentBitsRead;
     
     /**
      * Creates a new instance of BitInputStream.
      */
     public BitInputStream(DataInputStream dataInputStream) {
         this.dataInputStream = dataInputStream;
-        this.currentBits = new int[nbBitsPerByte];
         this.nbCurrentBitsRead = nbBitsPerByte;
-    }
-    
-    public static final int nbBitsPerByte = 8;
-    
-    /*
-     * In BitSequence, we output the bytes in big endian.
-     * This is the "reverse" function, that reads a byte and output an array of
-     * 8 bits.
-     */
-    public static void readByteFromFile(DataInputStream dataInputStream, int[] currentBits) {
-        try {
-            boolean isBigEndian = true;
-            int currentByte = byte2int(dataInputStream.readByte());
-            for (int i = 0; i < nbBitsPerByte; i++) {
-                currentBits[isBigEndian ? nbBitsPerByte - 1 - i : i] = currentByte % 2;
-                currentByte /= 2;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     /*
      * Get the next bit from this bit stream.
-     * The general case is that we read the bit at position nbCurrentBitsRead
-     * inside the array currentBits (of size nbBitsPerByte = 8).
+     * In the general case, we read the bit at position nbCurrentBitsRead inside
+     * the array currentBits (of size nbBitsPerByte = 8).
      * If we reach the end of the array currentBits, we read a new set of
      * nbBitsPerByte = 8 bits from the dataInputStream.
+     * The bits are read in big endian by default, but this can be modified
+     * by setting IntegerTools.isBigEndian to false.
      * In both cases, we update nbCurrentBitsRead.
      */
     @Override
-    public int getNextBit() {
+    public int getNextBit() throws IndexOutOfBoundsException {
         // If there are no more bits to read, read a new byte in the file.
         if (nbCurrentBitsRead == nbBitsPerByte) {
-            nbCurrentBitsRead = 0;
-            readByteFromFile(dataInputStream, currentBits);
+            try {
+                nbCurrentBitsRead = 0;
+                currentBits = byteToBitArray(dataInputStream.readByte());
+            } catch (IOException e) {
+                throw new IndexOutOfBoundsException();
+            }
         }
         // Extract a bit.
         return currentBits[nbCurrentBitsRead++];

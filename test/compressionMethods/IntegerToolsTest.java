@@ -31,7 +31,48 @@ public class IntegerToolsTest {
     @After
     public void tearDown() {
     }
-
+    
+    /**
+     * Test of byteToBitArray method, of class IntegerTools.
+     */
+    @Test
+    public void testByteToBitArray() {
+        System.out.println("byteToBitArray");
+        byte b;
+        int[] expResult, result;
+        // 0_{10} = 00000000_2.
+        b = 0;
+        expResult = new int[IntegerTools.nbBitsPerByte];
+        result = IntegerTools.byteToBitArray(b);
+        assertArrayEquals(expResult, result);
+        // 242_{10} = 11110010_2.
+        b = (byte)242;
+        expResult = new int[] {1, 1, 1, 1, 0, 0, 1, 0};
+        result = IntegerTools.byteToBitArray(b);
+        assertArrayEquals(expResult, result);
+    }
+    
+    /**
+     * Test of bitArrayToByte method, of class IntegerTools.
+     */
+    @Test
+    public void testBitArrayToByte() {
+        System.out.println("bitArrayToByte");
+        int[] bitArray;
+        byte expResult, result;
+        // [0, 0, 0, 0, 0, 0, 0, 0] leads to 0.
+        bitArray = new int[IntegerTools.nbBitsPerByte];
+        expResult = 0;
+        result = IntegerTools.bitArrayToByte(bitArray);
+        assertEquals(expResult, result);
+        // [0] is undefined
+        bitArray = new int[3];
+        try {
+            result = IntegerTools.bitArrayToByte(bitArray);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
+    }
+    
     /**
      * Test of byte2int method, of class IntegerTools.
      */

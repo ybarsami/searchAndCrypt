@@ -47,7 +47,7 @@ public class MethodBinary extends MethodByElement {
      * Writes x on just nbBitsToWrite bits.
      * Assumes that 0 <= x < 2^nbBitsToWrite.
      */
-    public  static void writeCodeBinary(int x, BitSequence buffer, int nbBitsToWrite) {
+    public static void writeCodeBinary(int x, BitSequence buffer, int nbBitsToWrite) {
         assert(nbBitsToWrite >= 0);
         assert(x >= 0);
         assert(x < (1 << nbBitsToWrite));

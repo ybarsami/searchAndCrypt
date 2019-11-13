@@ -13,6 +13,6 @@ public abstract class BitStream {
     /*
      * Get the next bit from this bit stream.
      */
-    public abstract int getNextBit();
+    public abstract int getNextBit() throws IndexOutOfBoundsException;
 
 }

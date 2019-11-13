@@ -26,7 +26,7 @@ public class BitSequenceStream extends BitStream {
      * Get the next bit from this bit stream.
      */
     @Override
-    public int getNextBit() {
+    public int getNextBit() throws IndexOutOfBoundsException {
         return bitSequence.get(nbBitsRead++) ? 1 : 0;
     }
 

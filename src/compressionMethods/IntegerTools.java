@@ -10,6 +10,38 @@ package compressionMethods;
  */
 public class IntegerTools {
     
+    public static final int nbBitsPerByte = 8;
+    public static final boolean isBigEndian = true;
+    
+    /*
+     * Transform a byte to an array of 8 bits.
+     * This function uses a big endian or little endian representation of the
+     * byte, depending on the value of the boolean isBigEndian.
+     */
+    public static int[] byteToBitArray(byte b) {
+        int[] bitArray = new int[nbBitsPerByte];
+        int myByte = byte2int(b);
+        for (int i = 0; i < nbBitsPerByte; i++) {
+            bitArray[isBigEndian ? nbBitsPerByte - 1 - i : i] = myByte % 2;
+            myByte /= 2;
+        }
+        return bitArray;
+    }
+    
+    /*
+     * Transform an array of 8 bits to a byte.
+     * This function uses a big endian or little endian representation of the
+     * byte, depending on the value of the boolean isBigEndian.
+     */
+    public static byte bitArrayToByte(int[] bitArray) {
+        assert(bitArray.length == nbBitsPerByte);
+        byte b = 0;
+        for (int i = 0; i < nbBitsPerByte; i++) {
+            b |= bitArray[i] << (isBigEndian ? nbBitsPerByte - 1 - i : i);
+        }
+        return b;
+    }
+    
     /*
      * Converts a signed byte b (-128 <= b <= 127) to an unsigned int.
      * (if the byte is negative, adds 256).
