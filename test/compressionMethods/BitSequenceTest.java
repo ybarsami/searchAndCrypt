@@ -58,6 +58,64 @@ public class BitSequenceTest {
     }
 
     /**
+     * Test of get method, of class BitSequence.
+     */
+    @Test
+    public void testGet() {
+        System.out.println("get");
+        BitSequence instance;
+        boolean expResult, result;
+        // Empty sequence
+        instance = new BitSequence();
+        try {
+            instance.get(0);
+            fail("This should not be executed.");
+        } catch(IndexOutOfBoundsException e) {}
+        // Value "11111111"
+        instance = new BitSequence();
+        instance.append(true, IntegerTools.nbBitsPerByte);
+        for (int i = 0; i < IntegerTools.nbBitsPerByte; i++) {
+            expResult = true;
+            result = instance.get(0);
+            assertEquals(expResult, result);
+        }
+        // Value "10101010010101"
+        instance = new BitSequence();
+        for (int i = 0; i < 4; i++) {
+            instance.append(true);
+            instance.append(false);
+        }
+        for (int i = 0; i < 3; i++) {
+            instance.append(false);
+            instance.append(true);
+        }
+        for (int i = 0; i < 4; i++) {
+            expResult = true;
+            result = instance.get(2 * i);
+            assertEquals(expResult, result);
+            expResult = false;
+            result = instance.get(2 * i + 1);
+            assertEquals(expResult, result);
+        }
+        for (int i = 0; i < 3; i++) {
+            expResult = false;
+            result = instance.get(8 + 2 * i);
+            assertEquals(expResult, result);
+            expResult = true;
+            result = instance.get(8 + 2 * i + 1);
+            assertEquals(expResult, result);
+        }
+        try {
+            instance.get(-1);
+            fail("This should not be executed.");
+        } catch(IndexOutOfBoundsException e) {}
+        try {
+            instance.get(14);
+            fail("This should not be executed.");
+        } catch(IndexOutOfBoundsException e) {}
+    }
+
+    /**
      * Test of toByteArray method, of class BitSequence.
      */
     @Test
@@ -133,6 +191,17 @@ public class BitSequenceTest {
         instance.append(value);
         after = instance.toString();
         assertEquals(before + "0", after);
+        // Maximum number of append
+        value = false;
+        instance = new BitSequence();
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            instance.append(value);
+        }
+        // Too much append
+        try {
+            instance.append(value);
+            fail("This should not be executed.");
+        } catch(IndexOutOfBoundsException e) {}
     }
 
     /**
@@ -170,6 +239,16 @@ public class BitSequenceTest {
         instance.append(value, nbPositions);
         after = instance.toString();
         assertEquals(before + String.join("", Collections.nCopies(nbPositions, "0")), after);
+        // Maximum number of append
+        value = false;
+        nbPositions = Integer.MAX_VALUE;
+        instance = new BitSequence();
+        instance.append(value, nbPositions);
+        // Too much append
+        try {
+            instance.append(value);
+            fail("This should not be executed.");
+        } catch(IndexOutOfBoundsException e) {}
     }
 
     /**

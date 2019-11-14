@@ -47,7 +47,7 @@ public class BitSequence {
      * Returns the value of the bit with the specified index.
      */
     public boolean get(int i) throws IndexOutOfBoundsException {
-        if (i <= lastPosition) {
+        if (i <= lastPosition && i >= 0) {
             return bitSet.get(i);
         } else {
             throw new IndexOutOfBoundsException();
@@ -90,31 +90,19 @@ public class BitSequence {
     ////////////////////////////////////////////////////////////////////////////
     
     /*
-     * Append {@code true} to the bit sequence.
-     */
-    private void appendTrue() {
-        lastPosition++;
-        bitSet.set(lastPosition);
-    }
-    
-    /*
-     * Append {@code false} to the bit sequence.
-     */
-    private void appendFalse() {
-        lastPosition++;
-        bitSet.clear(lastPosition);
-    }
-    
-    /*
      * Append the specified value to the bit sequence.
      *
      * @param value a boolean value to append.
      */
-    public void append(boolean value) {
+    public void append(boolean value) throws IndexOutOfBoundsException {
+        if (nbBits() == Integer.MAX_VALUE) {
+            throw new IndexOutOfBoundsException();
+        }
+        lastPosition++;
         if (value) {
-            appendTrue();
+            bitSet.set(lastPosition);
         } else {
-            appendFalse();
+            bitSet.clear(lastPosition);
         }
     }
     
