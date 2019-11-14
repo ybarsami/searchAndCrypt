@@ -42,12 +42,12 @@ public abstract class MethodByElement extends MethodByBitSequence {
     public abstract void writeCode(int x, BitSequence buffer);
     
     @Override
-    public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
+    public final ArrayIntList readMailList(BitInputStream bitInputStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
         int idMail = 0;
         for (int i = 0; i < nbMailsLocal; i++) {
             // Extract a gap.
-            int gap = readCode(bitStream);
+            int gap = readCode(bitInputStream);
             // Convert the gap to a mail id and add it to the mail list.
             idMail += gap;
             mailList.add(idMail);
@@ -58,6 +58,6 @@ public abstract class MethodByElement extends MethodByBitSequence {
     /*
      * Read the code of an integer from the given bit input stream.
      */
-    public abstract int readCode(BitStream bitStream);
+    public abstract int readCode(BitInputStream bitInputStream);
 
 }

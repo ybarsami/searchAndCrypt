@@ -21,8 +21,8 @@ public class MethodUnary extends MethodByElement {
     }
 
     @Override
-    public int readCode(BitStream bitStream) {
-        return readCodeUnary(bitStream);
+    public int readCode(BitInputStream bitInputStream) {
+        return readCodeUnary(bitInputStream);
     }
     
     public static void writeCodeUnary(int x, BitSequence buffer) {
@@ -33,12 +33,12 @@ public class MethodUnary extends MethodByElement {
         buffer.append(false);
     }
     
-    public static int readCodeUnary(BitStream bitStream) {
+    public static int readCodeUnary(BitInputStream bitInputStream) {
         int value = 0;
         boolean hasReadAZero = false;
         while (!hasReadAZero) {
             // Extract a bit.
-            int bitRead = bitStream.getNextBit();
+            int bitRead = bitInputStream.getNextBit();
             if (bitRead == 1) {
                 value++;
             } else {

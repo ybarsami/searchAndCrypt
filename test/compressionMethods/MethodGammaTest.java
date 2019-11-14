@@ -83,13 +83,13 @@ public class MethodGammaTest {
         MethodGamma instance = new MethodGamma();
         int result, expResult;
         BitSequence buffer;
-        BitStream bitStream;
+        BitInputStreamArray bitInputStream;
         // Writing and reading 1..42
         for (expResult = 1; expResult < 43; expResult++) {
             buffer = new BitSequence();
             instance.writeCode(expResult, buffer);
-            bitStream = new BitSequenceStream(buffer);
-            result = instance.readCode(bitStream);
+            bitInputStream = new BitInputStreamArray(buffer);
+            result = instance.readCode(bitInputStream);
             assertEquals(expResult, result);
         }
     }
@@ -139,13 +139,13 @@ public class MethodGammaTest {
         System.out.println("readCodeGamma");
         int result, expResult;
         BitSequence buffer;
-        BitStream bitStream;
+        BitInputStreamArray bitInputStream;
         // Writing and reading 1..42
         for (expResult = 1; expResult < 43; expResult++) {
             buffer = new BitSequence();
             MethodGamma.writeCodeGamma(expResult, buffer);
-            bitStream = new BitSequenceStream(buffer);
-            result = MethodGamma.readCodeGamma(bitStream);
+            bitInputStream = new BitInputStreamArray(buffer);
+            result = MethodGamma.readCodeGamma(bitInputStream);
             assertEquals(expResult, result);
         }
     }
@@ -165,8 +165,8 @@ public class MethodGammaTest {
             mailListInput.add(expResult[i]);
         }
         BitSequence bitSequence = instance.bitSequenceOfMailList(mailListInput);
-        BitSequenceStream bitSequenceStream = new BitSequenceStream(bitSequence);
-        ArrayIntList mailListOutput = instance.readMailList(bitSequenceStream, nbMailsInput);
+        BitInputStreamArray bitInputStream = new BitInputStreamArray(bitSequence);
+        ArrayIntList mailListOutput = instance.readMailList(bitInputStream, nbMailsInput);
         int nbMailsOutput = mailListOutput.size();
         int[] result = new int[nbMailsOutput];
         for (int i = 0; i < nbMailsOutput; i++) {

@@ -64,9 +64,9 @@ public class MethodInterpolative extends MethodByBitSequence {
     }
     
     @Override
-    public final ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal) {
+    public final ArrayIntList readMailList(BitInputStream bitInputStream, int nbMailsLocal) {
         ArrayIntList mailList = new ArrayIntList();
-        readCodeListInterpolative(bitStream, mailList, nbMailsLocal, 1, this.nbMails);
+        readCodeListInterpolative(bitInputStream, mailList, nbMailsLocal, 1, this.nbMails);
         return mailList;
     }
     
@@ -98,32 +98,32 @@ public class MethodInterpolative extends MethodByBitSequence {
         MethodBinary.writeCodeBinary(x - lo, buffer, ceilingLog2(hi - lo + 1));
     }
     
-    private static void readCodeListInterpolative(BitStream bitStream, ArrayIntList mailList, int f, int lo, int hi) {
+    private static void readCodeListInterpolative(BitInputStream bitInputStream, ArrayIntList mailList, int f, int lo, int hi) {
         switch (f) {
             case 0:
                 return;
             case 1:
                 {
-                    int m = readCodeBinary(bitStream, lo, hi);
+                    int m = readCodeBinary(bitInputStream, lo, hi);
                     mailList.add(m);
                     break;
                 }
             default:
                 {
                     int h = f / 2;
-                    int m = readCodeBinary(bitStream, lo + h, hi - (f - h - 1));
-                    readCodeListInterpolative(bitStream, mailList, h, lo, m - 1);
+                    int m = readCodeBinary(bitInputStream, lo + h, hi - (f - h - 1));
+                    readCodeListInterpolative(bitInputStream, mailList, h, lo, m - 1);
                     mailList.add(m);
-                    readCodeListInterpolative(bitStream, mailList, f - h - 1, m + 1, hi);
+                    readCodeListInterpolative(bitInputStream, mailList, f - h - 1, m + 1, hi);
                     break;
                 }
         }
     }
     
-    private static int readCodeBinary(BitStream bitStream, int lo, int hi) {
+    private static int readCodeBinary(BitInputStream bitInputStream, int lo, int hi) {
         // The number of bits we have to read for the current int to extract.
         int nbBitsToRead = ceilingLog2(hi - lo + 1);
-        return MethodBinary.readCodeBinary(bitStream, nbBitsToRead) + lo;
+        return MethodBinary.readCodeBinary(bitInputStream, nbBitsToRead) + lo;
     }
     
     @Override

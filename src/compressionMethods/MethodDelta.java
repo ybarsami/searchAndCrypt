@@ -25,8 +25,8 @@ public class MethodDelta extends MethodByElement {
     }
 
     @Override
-    public int readCode(BitStream bitStream) {
-        return readCodeDelta(bitStream);
+    public int readCode(BitInputStream bitInputStream) {
+        return readCodeDelta(bitInputStream);
     }
     
     public static void writeCodeDelta(int x, BitSequence buffer) {
@@ -36,9 +36,9 @@ public class MethodDelta extends MethodByElement {
         MethodBinary.writeCodeBinary(residual, buffer, ilog2x);
     }
     
-    public static int readCodeDelta(BitStream bitStream) {
-        int ilog2x = MethodGamma.readCodeGamma(bitStream) - 1;
-        int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
+    public static int readCodeDelta(BitInputStream bitInputStream) {
+        int ilog2x = MethodGamma.readCodeGamma(bitInputStream) - 1;
+        int residual = MethodBinary.readCodeBinary(bitInputStream, ilog2x);
         return residual + (1 << ilog2x);
     }
     

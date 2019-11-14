@@ -86,13 +86,13 @@ public class MethodBinaryTest {
         MethodBinary instance = new MethodBinary(nbMails);
         int result, expResult;
         BitSequence buffer;
-        BitStream bitStream;
+        BitInputStreamArray bitInputStream;
         // Writing and reading 1..nbMails
         for (expResult = 1; expResult <= nbMails; expResult++) {
             buffer = new BitSequence();
             instance.writeCode(expResult, buffer);
-            bitStream = new BitSequenceStream(buffer);
-            result = instance.readCode(bitStream);
+            bitInputStream = new BitInputStreamArray(buffer);
+            result = instance.readCode(bitInputStream);
             assertEquals(expResult, result);
         }
     }
@@ -145,13 +145,13 @@ public class MethodBinaryTest {
         int nbBits = 5;
         int result, expResult;
         BitSequence buffer;
-        BitStream bitStream;
+        BitInputStreamArray bitInputStream;
         // Writing and reading 0..31
         for (expResult = 0; expResult < 32; expResult++) {
             buffer = new BitSequence();
             MethodBinary.writeCodeBinary(expResult, buffer, nbBits);
-            bitStream = new BitSequenceStream(buffer);
-            result = MethodBinary.readCodeBinary(bitStream, nbBits);
+            bitInputStream = new BitInputStreamArray(buffer);
+            result = MethodBinary.readCodeBinary(bitInputStream, nbBits);
             assertEquals(expResult, result);
         }
     }
@@ -171,8 +171,8 @@ public class MethodBinaryTest {
             mailListInput.add(expResult[i]);
         }
         BitSequence bitSequence = instance.bitSequenceOfMailList(mailListInput);
-        BitSequenceStream bitSequenceStream = new BitSequenceStream(bitSequence);
-        ArrayIntList mailListOutput = instance.readMailList(bitSequenceStream, nbMailsInput);
+        BitInputStreamArray bitInputStream = new BitInputStreamArray(bitSequence);
+        ArrayIntList mailListOutput = instance.readMailList(bitInputStream, nbMailsInput);
         int nbMailsOutput = mailListOutput.size();
         int[] result = new int[nbMailsOutput];
         for (int i = 0; i < nbMailsOutput; i++) {

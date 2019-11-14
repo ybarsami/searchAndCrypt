@@ -28,8 +28,8 @@ public class MethodGamma extends MethodByElement {
     }
 
     @Override
-    public int readCode(BitStream bitStream) {
-        return readCodeGamma(bitStream);
+    public int readCode(BitInputStream bitInputStream) {
+        return readCodeGamma(bitInputStream);
     }
     
     public static void writeCodeGamma(int x, BitSequence buffer) {
@@ -39,9 +39,9 @@ public class MethodGamma extends MethodByElement {
         MethodBinary.writeCodeBinary(residual, buffer, ilog2x);
     }
     
-    public static int readCodeGamma(BitStream bitStream) {
-        int ilog2x = MethodUnary.readCodeUnary(bitStream) - 1;
-        int residual = MethodBinary.readCodeBinary(bitStream, ilog2x);
+    public static int readCodeGamma(BitInputStream bitInputStream) {
+        int ilog2x = MethodUnary.readCodeUnary(bitInputStream) - 1;
+        int residual = MethodBinary.readCodeBinary(bitInputStream, ilog2x);
         return residual + (1 << ilog2x);
     }
     

@@ -36,7 +36,7 @@ public abstract class MethodByBitSequence extends CompressionMethod {
     
     @Override
     public final ArrayIntList readMailList(DataInputStream dataInputStream, int nbMailsLocal) {
-        BitInputStream bitInputStream = new BitInputStream(dataInputStream);
+        BitInputStreamFile bitInputStream = new BitInputStreamFile(dataInputStream);
         return readMailList(bitInputStream, nbMailsLocal);
     }
     
@@ -44,10 +44,10 @@ public abstract class MethodByBitSequence extends CompressionMethod {
      * Output the mailList encoded in the given BitSequence.
      */
     public final ArrayIntList readMailList(BitSequence bitSequence, int nbMailsLocal) {
-        BitSequenceStream bitSequenceStream = new BitSequenceStream(bitSequence);
-        return readMailList(bitSequenceStream, nbMailsLocal);
+        BitInputStreamArray bitInputStream = new BitInputStreamArray(bitSequence);
+        return readMailList(bitInputStream, nbMailsLocal);
     }
     
-    public abstract ArrayIntList readMailList(BitStream bitStream, int nbMailsLocal);
+    public abstract ArrayIntList readMailList(BitInputStream bitInputStream, int nbMailsLocal);
     
 }

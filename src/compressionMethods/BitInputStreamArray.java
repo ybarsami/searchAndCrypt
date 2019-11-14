@@ -8,16 +8,16 @@ package compressionMethods;
  *
  * @author yann
  */
-public class BitSequenceStream extends BitStream {
+public class BitInputStreamArray extends BitInputStream {
     
     final BitSequence bitSequence;
     
     int nbBitsRead;
     
     /**
-     * Creates a new instance of BitSequenceStream.
+     * Creates a new instance of BitInputStreamArray.
      */
-    public BitSequenceStream(BitSequence bitSequence) {
+    public BitInputStreamArray(BitSequence bitSequence) {
         this.bitSequence = bitSequence;
         this.nbBitsRead = 0;
     }

@@ -39,8 +39,8 @@ public class MethodBinary extends MethodByElement {
     }
     
     @Override
-    public int readCode(BitStream bitStream) {
-        return readCodeBinary(bitStream, nbBitsPerBinaryNumber) + 1;
+    public int readCode(BitInputStream bitInputStream) {
+        return readCodeBinary(bitInputStream, nbBitsPerBinaryNumber) + 1;
     }
     
     /*
@@ -58,11 +58,11 @@ public class MethodBinary extends MethodByElement {
         }
     }
     
-    public static int readCodeBinary(BitStream bitStream, int nbBitsToRead) {
+    public static int readCodeBinary(BitInputStream bitInputStream, int nbBitsToRead) {
         int value = 0;
         for (int j = 0; j < nbBitsToRead; j++) {
             // Extract a bit.
-            int bitRead = bitStream.getNextBit();
+            int bitRead = bitInputStream.getNextBit();
             value *= 2;
             value += bitRead;
         }
