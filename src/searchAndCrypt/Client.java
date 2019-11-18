@@ -41,7 +41,7 @@ public class Client {
     public Client(Server server) {
         this.server = server;
         stringAnalyzer = new StringAnalyzer(server.getLanguage());
-        request = new Request(server, indexType, stringAnalyzer);
+        request = new Request(server, stringAnalyzer);
         globalIndex = new GlobalIndex();
     }
     

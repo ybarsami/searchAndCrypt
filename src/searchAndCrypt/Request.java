@@ -17,15 +17,13 @@ import java.util.Set;
 public class Request {
     
     private final Server server;
-    private final String indexType;
     private final StringAnalyzer stringAnalyzer;
     
     /**
      * Creates a new instance of Request.
      */
-    public Request(Server server, String indexType, StringAnalyzer stringAnalyzer) {
+    public Request(Server server, StringAnalyzer stringAnalyzer) {
         this.server = server;
-        this.indexType = indexType;
         this.stringAnalyzer = stringAnalyzer;
     }
     
