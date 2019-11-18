@@ -34,10 +34,17 @@ public abstract class Server {
     
     /*
      * Get all the e-mail identifiers that have identifier >= minIdentifier.
+     * WARNING: assumes that newer messages have greater identifiers.
      *
      * @return the wanted e-mail identifiers, as a sorted set.
      */
     public abstract TreeSet<Integer> getAllMessageIdentifiers(int minIdentifier);
+    /*
+     * Get all the e-mail identifiers.
+     * WARNING: assumes that all the message identifiers have id >= 0.
+     *
+     * @return all e-mail identifiers, as a sorted set.
+     */
     public final TreeSet<Integer> getAllMessageIdentifiers() {
         return getAllMessageIdentifiers(0);
     }
