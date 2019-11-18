@@ -77,8 +77,6 @@ public class ServerLocal extends Server {
     private String fileNameBijection;            // Name of the file that stores the bijection idMsg / mailName.
     private HashMap<Integer, File> mapBijection; // HashMap that stores the bijection idMsg / mailFile.
     
-    private String language;                     // Main language in which the mails are written.
-    
     private String getIndexFileName(String indexName) {
         return fileNameIndex + indexName + "." + fileExtension;
     }
@@ -103,7 +101,7 @@ public class ServerLocal extends Server {
         maxIdIndexedMail = 0;
         
         loadMails(mailsType);
-        language = mailsType.getLanguage();
+        setLanguage(mailsType.getLanguage());
     }
     
     /*
@@ -243,14 +241,6 @@ public class ServerLocal extends Server {
         return new ArrayList<>();
     }
     
-    /*
-     * Get the language used.
-     */
-    @Override
-    public String getLanguage() {
-        return language;
-    }
-    
     
     ////////////////////////////////////////////////////////////////////////////
     // Interaction : Client -> Server.
@@ -334,6 +324,14 @@ public class ServerLocal extends Server {
             return true;
         } else {
             // This is a new chunk.
+            if (maxIdMail <= maxIdIndexedMail) {
+                // The user has started re-indexing everything from scratch.
+                for (int i = 0; i < nbIndexChunks; i++) {
+                    new File(getChunkedIndexFilePathName(indexName, i)).delete();
+                }
+                nbIndexChunks = 0;
+            }
+            maxIdIndexedMail = maxIdMail;
             new File(folderNameIndex).mkdirs();
             String filename = folderNameIndex + File.separatorChar +
                     fileNameIndex + indexName + "_chunk" + nbIndexChunks + "." + fileExtension;
@@ -347,7 +345,6 @@ public class ServerLocal extends Server {
                 return false;
             }
             nbIndexChunks++;
-            maxIdIndexedMail = maxIdMail > maxIdIndexedMail ? maxIdMail : maxIdIndexedMail;
             return true;
         }
     }

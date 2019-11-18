@@ -18,39 +18,61 @@ import java.util.TreeSet;
 public class Client {
     
     private final Server server;
-    private final StringAnalyzer stringAnalyzer;
     private final Request request;
     private GlobalIndex globalIndex;
+    private StringAnalyzer stringAnalyzer;
     
     // Number of mails we add to the index before sending a chunk of index to
     // the server.
-    private int nbMailsBeforeSave = 512;
+    private final int nbMailsBeforeSave = 512;
+    
+    // The index has to be compressed by a specific integer-compressing method
+    // to save memory, thus speed when downloading / uploading the index.
+    // This library comes with a number of techniques which can be used by
+    // choosing one of the following values for indexType: "binary32", "binary",
+    // "delta", "gamma", or "interpolative", see GlobalIndex.importFromFile.
+    // See CompressionMethod.java and other files inside the package
+    // compressionMethods for more details.
+    private final String indexType = "delta";
     
     /**
      * Creates a new instance of Client.
      */
-    public Client(Server server, String indexType, int nbMailsBeforeSave) {
+    public Client(Server server) {
         this.server = server;
         stringAnalyzer = new StringAnalyzer(server.getLanguage());
         request = new Request(server, indexType, stringAnalyzer);
         globalIndex = new GlobalIndex();
-        this.nbMailsBeforeSave = nbMailsBeforeSave;
     }
     
     
     ////////////////////////////////////////////////////////////////////////////
-    // Interactions with local data.
+    // Interactions with server.
     ////////////////////////////////////////////////////////////////////////////
+    
+    /*
+     * Sets a language to be used by the stemmer. If the language is different
+     * from the one stored on the server, we have to re-index everything.
+     *
+     * @param language, the String representing the language on which the
+     * stemmer will work.
+     * Valid language strings are:
+     * danish, dutch, english, finnish, french, german, hungarian, italian,
+     * norwegian, porter, portuguese, romanian, russian, spanish, swedish,
+     * turkish.
+     */
+    public final void setLanguage(String language) {
+        if (server.setLanguage(language)) {
+            stringAnalyzer = new StringAnalyzer(language);
+            updateIndex(true);
+        }
+    }
     
     /*
      * Export the index to the server, using the compression scheme specified
      * in indexType.
-     *
-     * @param indexType, the String representing the compression scheme for the
-     * index.
-     * For valid indexType Strings, see GlobalIndex.exportToFile.
      */
-    public void exportToFile(String indexType) {
+    public void exportToFile() {
         String tmpIndexFilename = "tmpIndex.txt";
         File tmpIndexFile = globalIndex.exportToFile(tmpIndexFilename, indexType);
         server.updateIndexFile(tmpIndexFile, indexType);
@@ -60,12 +82,8 @@ public class Client {
     /*
      * Export the index to the server, using the compression scheme specified
      * in indexType.
-     *
-     * @param indexType, the String representing the compression scheme for the
-     * index.
-     * For valid indexType Strings, see GlobalIndex.exportToFile.
      */
-    public void exportToChunk(String indexType) {
+    public void exportToChunk() {
         String tmpIndexFilename = "tmpIndex.txt";
         File tmpIndexFile = globalIndex.exportToFile(tmpIndexFilename, indexType);
         server.addChunkedIndexFile(tmpIndexFile, indexType, globalIndex.nbMails);
@@ -73,16 +91,20 @@ public class Client {
     }
     
     /*
-     * Download the e-mails from the server that are not yet indexed, and
-     * add them in the index.
+     * Download e-mails from the server and add them in the index.
+     *
+     * @param startFromScratch, a boolean telling whether to index:
+     *            > in case of true, all e-mails
+     *            > in case of false, only e-mails not yet indexed.
      */
-    public void indexEverything(Server server, String indexType) {
+    public void updateIndex(boolean startFromScratch) {
         // Clear the index.
         globalIndex = new GlobalIndex();
         int nbIndexedMessages = 0;
         
-        // Get the maximum identifier of an e-mail indexed on the server.
-        int maxIdIndexedMail = server.getMaxIdIndexedMail();
+        int maxIdIndexedMail = startFromScratch
+                ? 0
+                : server.getMaxIdIndexedMail(); // Get the maximum identifier of an e-mail indexed on the server.
         // Get all new mails from the server and index them.
         final TreeSet<Integer> allMessageIdentifiers = server.getAllMessageIdentifiers(maxIdIndexedMail);
         for (int i : allMessageIdentifiers) {
@@ -94,14 +116,14 @@ public class Client {
             nbIndexedMessages++;
             // Export a chunk of the index.
             if (nbIndexedMessages == nbMailsBeforeSave) {
-                exportToChunk(indexType);
+                exportToChunk();
                 globalIndex = new GlobalIndex();
                 nbIndexedMessages = 0;
             }
         }
         // Export a chunk of the index.
         if (nbIndexedMessages > 0) {
-            exportToChunk(indexType);
+            exportToChunk();
         }
         
         // Merge the chunks of the index.
@@ -116,14 +138,18 @@ public class Client {
     }
     
     /*
+     * Download the e-mails from the server that are not yet indexed, and
+     * add them in the index.
+     */
+    public void updateIndex() {
+        updateIndex(false);
+    }
+    
+    /*
      * Import the index from the server, using the compression scheme specified
      * in indexType.
-     *
-     * @param indexType, the String representing the compression scheme for the
-     * index.
-     * For valid indexType Strings, see GlobalIndex.importFromFile.
      */
-    public void loadIndex(String indexType) {
+    public void loadIndex() {
         File indexFile = server.getIndexFile(indexType);
         globalIndex.importFromFile(indexFile, indexType);
     }

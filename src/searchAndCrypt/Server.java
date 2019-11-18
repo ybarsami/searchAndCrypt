@@ -8,6 +8,7 @@ package searchAndCrypt;
 import java.io.File;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
@@ -74,10 +75,35 @@ public abstract class Server {
      */
     public abstract List<Integer> getRemovedMailIds();
     
+    // Main language in which the mails are written.
+    private String language;
+    
     /*
      * Get the language used.
      */
-    public abstract String getLanguage();
+    public final String getLanguage() {
+        return language;
+    }
+    
+    /*
+     * Sets a language to be used by the stemmer.
+     *
+     * @param language, the String representing the language on which the
+     * stemmer will work.
+     * Valid language strings are:
+     * danish, dutch, english, finnish, french, german, hungarian, italian,
+     * norwegian, porter, portuguese, romanian, russian, spanish, swedish,
+     * turkish.
+     *
+     * @return true if this changed the language, false otherwise.
+     */
+    public final boolean setLanguage(String language) {
+        if (Objects.equals(this.language, language)) {
+            return false;
+        }
+        this.language = language;
+        return true;
+    }
     
     
     ////////////////////////////////////////////////////////////////////////////
