@@ -127,20 +127,26 @@ public class GlobalIndex {
     // Import / export from files.
     ////////////////////////////////////////////////////////////////////////////
     
+    private void writeStringWithLength(DataOutputStream out, String str) throws IOException {
+        short nameLength = (short)str.length();
+        out.writeShort(nameLength);
+        // writeChars will write every character as an int (4 bytes)
+        // out.writeChars(entry.name);
+        // so we convert it to one byte instead (names are guaranteed to be ASCII)
+        for (int j = 0; j < nameLength; j++) {
+            out.writeByte(str.charAt(j));
+        }
+    }
+    
     public File exportToFile(String filename, String indexType) {
         try (FileOutputStream fout = new FileOutputStream(filename);
                 DataOutputStream out = new DataOutputStream(fout)) {
+            writeStringWithLength(out, indexType);
             out.writeInt(set.size());
             out.writeInt(nbMails);
             CompressionMethod compressionMethod = CompressionMethod.createCompressionMethod(indexType, nbMails);
             for (GlobalEntry entry : set) {
-                short nameLength = (short)entry.name.length();
-                out.writeShort(nameLength);
-                // writeChars will write every character as an int (4 bytes)
-                // out.writeChars(entry.name);
-                // so we convert it to one byte instead (names are guaranteed to be ASCII)
-                for (int j = 0; j < nameLength; j++)
-                    out.writeByte(entry.name.charAt(j));
+                writeStringWithLength(out, entry.name);
                 out.writeInt(entry.mailList.size());
                 compressionMethod.writeMailList(out, entry.mailList);
             }
@@ -150,23 +156,30 @@ public class GlobalIndex {
         return new File(filename);
     }
     
+    private String readStringWithLength(DataInputStream in) throws IOException {
+        short nameLength = in.readShort();
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < nameLength; j++) {
+            sb.append((char)in.readByte());
+        }
+        return sb.toString();
+    }
+    
     /*
      * Import from file.
      * Structure of the file depends of the index type.
      */
-    public void importFromFile(File file, String indexType) {
+    public void importFromFile(File file) {
         set.clear();
         try (FileInputStream fin = new FileInputStream(file);
                 DataInputStream in = new DataInputStream(fin)) {
+            String indexType = readStringWithLength(in);
             int nbNames = in.readInt();
             nbMails = in.readInt();
             CompressionMethod compressionMethod = CompressionMethod.createCompressionMethod(indexType, nbMails);
             for (int i = 0; i < nbNames; i++) {
                 GlobalEntry entry = new GlobalEntry();
-                short nameLength = in.readShort();
-                entry.name = "";
-                for (int j = 0; j < nameLength; j++)
-                    entry.name += (char)in.readByte();
+                entry.name = readStringWithLength(in);
                 int nbMailsLocal = in.readInt();
                 entry.mailList = compressionMethod.readMailList(in, nbMailsLocal);
                 set.add(entry);
@@ -211,18 +224,20 @@ public class GlobalIndex {
      * Import from two chunk files, and merge them.
      * Structure of the file depends of the index type.
      */
-    public File importAndMerge(File fileChunk1, File fileChunk2, String indexType) {
+    public File importAndMerge(File fileChunk1, File fileChunk2) {
         set.clear();
         try (FileInputStream fin1 = new FileInputStream(fileChunk1);
                 DataInputStream in1 = new DataInputStream(fin1);
                 FileInputStream fin2 = new FileInputStream(fileChunk2);
                 DataInputStream in2 = new DataInputStream(fin2)) {
+            String indexType1 = readStringWithLength(in1);
             int nbNames1 = in1.readInt();
             int nbMails1 = in1.readInt();
-            CompressionMethod compressionMethod1 = CompressionMethod.createCompressionMethod(indexType, nbMails1);
+            CompressionMethod compressionMethod1 = CompressionMethod.createCompressionMethod(indexType1, nbMails1);
+            String indexType2 = readStringWithLength(in2);
             int nbNames2 = in2.readInt();
             int nbMails2 = in2.readInt();
-            CompressionMethod compressionMethod2 = CompressionMethod.createCompressionMethod(indexType, nbMails2);
+            CompressionMethod compressionMethod2 = CompressionMethod.createCompressionMethod(indexType2, nbMails2);
             nbMails = nbMails1 > nbMails2 ? nbMails1 : nbMails2;
             int i1 = 0, i2 = 0;
             boolean readFile1 = true, readFile2 = true;
@@ -284,10 +299,11 @@ public class GlobalIndex {
                 }
                 set.add(entry);
             }
+            return exportToFile("tmpIndex.txt", indexType1);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return exportToFile("tmpIndex.txt", indexType);
     }
     
     

@@ -69,24 +69,22 @@ public class Client {
     }
     
     /*
-     * Export the index to the server, using the compression scheme specified
-     * in indexType.
+     * Export the full compressed index to the server.
      */
     public void exportToFile() {
         String tmpIndexFilename = "tmpIndex.txt";
         File tmpIndexFile = globalIndex.exportToFile(tmpIndexFilename, indexType);
-        server.updateIndexFile(tmpIndexFile, indexType);
+        server.updateIndexFile(tmpIndexFile);
         tmpIndexFile.delete();
     }
     
     /*
-     * Export the index to the server, using the compression scheme specified
-     * in indexType.
+     * Export a chunk of the compressed index to the server.
      */
     public void exportToChunk() {
         String tmpIndexFilename = "tmpIndex.txt";
         File tmpIndexFile = globalIndex.exportToFile(tmpIndexFilename, indexType);
-        server.addChunkedIndexFile(tmpIndexFile, indexType, globalIndex.nbMails);
+        server.addChunkedIndexFile(tmpIndexFile, globalIndex.nbMails);
         tmpIndexFile.delete();
     }
     
@@ -128,13 +126,13 @@ public class Client {
         
         // Merge the chunks of the index.
         while (server.getNbIndexChunks() > 1) {
-            List<File> chunks12 = server.getTwoChunksIndex(indexType);
-            File merged = globalIndex.importAndMerge(chunks12.get(0), chunks12.get(1), indexType);
-            server.addChunkedIndexFile(merged, indexType, Server.NOT_A_NEW_CHUNK);
+            List<File> chunks12 = server.getTwoChunksIndex();
+            File merged = globalIndex.importAndMerge(chunks12.get(0), chunks12.get(1));
+            server.addChunkedIndexFile(merged, Server.NOT_A_NEW_CHUNK);
         }
         
         // Store the full index on the server.
-        server.replaceIndexWithLastChunk(indexType);
+        server.replaceIndexWithLastChunk();
     }
     
     /*
@@ -146,12 +144,11 @@ public class Client {
     }
     
     /*
-     * Import the index from the server, using the compression scheme specified
-     * in indexType.
+     * Import the compressed index from the server.
      */
     public void loadIndex() {
-        File indexFile = server.getIndexFile(indexType);
-        globalIndex.importFromFile(indexFile, indexType);
+        File indexFile = server.getIndexFile();
+        globalIndex.importFromFile(indexFile);
     }
     
     

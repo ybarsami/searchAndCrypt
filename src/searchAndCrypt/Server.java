@@ -34,6 +34,8 @@ public abstract class Server {
     
     /*
      * Get all the e-mail identifiers that have identifier >= minIdentifier.
+     *
+     * @return the wanted e-mail identifiers, as a sorted set.
      */
     public abstract TreeSet<Integer> getAllMessageIdentifiers(int minIdentifier);
     public final TreeSet<Integer> getAllMessageIdentifiers() {
@@ -51,20 +53,16 @@ public abstract class Server {
     /*
      * Get the index.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
-     * @return the index compressed with this scheme.
+     * @return the file containing the compressed index.
      */
-    public abstract File getIndexFile(String indexName);
+    public abstract File getIndexFile();
     
     /*
      * Get the two consecutive chunks with minimum file size.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
      * @return the two consecutive chunks with minimum file size.
      */
-    public abstract List<File> getTwoChunksIndex(String indexName);
+    public abstract List<File> getTwoChunksIndex();
     
     /*
      * Get the list of mails removed from the server since last connexion.
@@ -80,6 +78,9 @@ public abstract class Server {
     
     /*
      * Get the language used.
+     *
+     * @return the String containing the language currently in use for the
+     * stemmer, null if the index is not stemmed.
      */
     public final String getLanguage() {
         return language;
@@ -117,11 +118,9 @@ public abstract class Server {
      *
      * @param newIndexFile, a new version of the index that will replace the
      * current one.
-     * @param indexName, the String representing the compression scheme for the
-     * index.
      * @return true iff the index has successfully be replaced.
      */
-    public abstract boolean updateIndexFile(File newIndexFile, String indexName);
+    public abstract boolean updateIndexFile(File newIndexFile);
     
     /*
      * Receives a new chunk of the index --- to avoid needing to build the full
@@ -129,15 +128,13 @@ public abstract class Server {
      *
      * @param chunkedIndexFile, a chunk of the index that will added to the
      *        current ones.
-     * @param indexName, the String representing the compression scheme for the
-     *        index.
      * @param maxIdMail, the maximum index of the mail contained in the chunk.
      *        If set to -1, this is the result of two chunks currently on
      *        the server (in this case, replace them with the chunk), otherwise
      *        this is a new chunk (in this case, add the chunk to the list).
      * @return true iff the chunked index has been successfully added.
      */
-    public abstract boolean addChunkedIndexFile(File chunkedIndexFile, String indexName, int maxIdMail);
+    public abstract boolean addChunkedIndexFile(File chunkedIndexFile, int maxIdMail);
     
     
     ////////////////////////////////////////////////////////////////////////////
@@ -148,11 +145,9 @@ public abstract class Server {
      * The chunks have all been merged to the last chunk on the server.
      * Set the index to this last chunk.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
      * @return true iff the index has successfully be replaced.
      */
-    public abstract boolean replaceIndexWithLastChunk(String indexName);
+    public abstract boolean replaceIndexWithLastChunk();
     
     /*
      * Whenever a new mail comes or an old mail is deleted, updates the map

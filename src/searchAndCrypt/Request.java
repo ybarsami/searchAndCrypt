@@ -47,8 +47,8 @@ public class Request {
         }
         
         GlobalIndex globalIndex = new GlobalIndex();
-        File indexFile = server.getIndexFile(indexType);
-        globalIndex.importFromFile(indexFile, indexType);
+        File indexFile = server.getIndexFile();
+        globalIndex.importFromFile(indexFile);
         
         // For each stemmed word from the request, put its inverted list.
         ArrayList<Set<Integer>> potentialEmails = new ArrayList<>();

@@ -29,11 +29,8 @@ public class SearchAndCrypt {
             final Client client = new Client(server);
             
             if (hasToIndex) {
-                // Create new index from scratch,
-                client.updateIndex();
-                
-                // and export it to the server...
-                client.exportToFile();
+                // Create new index from scratch and export it to the server...
+                client.updateIndex(true);
                 
             } else {
                 // ... or import the index from server.

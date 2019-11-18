@@ -77,17 +77,17 @@ public class ServerLocal extends Server {
     private String fileNameBijection;            // Name of the file that stores the bijection idMsg / mailName.
     private HashMap<Integer, File> mapBijection; // HashMap that stores the bijection idMsg / mailFile.
     
-    private String getIndexFileName(String indexName) {
-        return fileNameIndex + indexName + "." + fileExtension;
+    private String getIndexFileName() {
+        return fileNameIndex + "." + fileExtension;
     }
-    private String getChunkedIndexFileName(String indexName, int idChunk) {
-        return fileNameIndex + indexName + "_chunk" + idChunk + "." + fileExtension;
+    private String getChunkedIndexFileName(int idChunk) {
+        return fileNameIndex + "_chunk" + idChunk + "." + fileExtension;
     }
-    private String getIndexFilePathName(String indexName) {
-        return folderNameIndex + File.separatorChar + getIndexFileName(indexName);
+    private String getIndexFilePathName() {
+        return folderNameIndex + File.separatorChar + getIndexFileName();
     }
-    private String getChunkedIndexFilePathName(String indexName, int idChunk) {
-        return folderNameIndex + File.separatorChar + getChunkedIndexFileName(indexName, idChunk);
+    private String getChunkedIndexFilePathName(int idChunk) {
+        return folderNameIndex + File.separatorChar + getChunkedIndexFileName(idChunk);
     }
     
     
@@ -155,6 +155,8 @@ public class ServerLocal extends Server {
     
     /*
      * Get all the e-mail identifiers that have identifier >= minIdentifier.
+     *
+     * @return the wanted e-mail identifiers, as a sorted set.
      */
     @Override
     public TreeSet<Integer> getAllMessageIdentifiers(int minIdentifier) {
@@ -181,22 +183,20 @@ public class ServerLocal extends Server {
     /*
      * Get the index.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
-     * @return the index compressed with this scheme.
+     * @return the file containing the compressed index.
      */
     @Override
-    public File getIndexFile(String indexName) {
-        String filename = getIndexFilePathName(indexName);
+    public File getIndexFile() {
+        String filename = getIndexFilePathName();
         return new File(filename);
     }
     
-    private int getIndexFirstOfTwoChunks(String indexName) {
+    private int getIndexFirstOfTwoChunks() {
         int indexMin = -1;
         long minSize = Integer.MAX_VALUE;
         for (int i = 0; i < nbIndexChunks / 2; i++) {
-            String filename1 = getChunkedIndexFilePathName(indexName, i);
-            String filename2 = getChunkedIndexFilePathName(indexName, i + 1);
+            String filename1 = getChunkedIndexFilePathName(i);
+            String filename2 = getChunkedIndexFilePathName(i + 1);
             long sizeOfTwoChunks = new File(filename1).length() + new File(filename2).length();
             if (minSize > sizeOfTwoChunks) {
                 minSize = sizeOfTwoChunks;
@@ -209,19 +209,17 @@ public class ServerLocal extends Server {
     /*
      * Get the two consecutive chunks with minimum file size.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
      * @return the two consecutive chunks with minimum file size.
      */
     @Override
-    public List<File> getTwoChunksIndex(String indexName) {
+    public List<File> getTwoChunksIndex() {
         if (nbIndexChunks <= 1) {
             return null;
         }
-        int indexMin = getIndexFirstOfTwoChunks(indexName);
+        int indexMin = getIndexFirstOfTwoChunks();
         ArrayList<File> twoChunks = new ArrayList<>();
-        String filename1 = getChunkedIndexFilePathName(indexName, indexMin);
-        String filename2 = getChunkedIndexFilePathName(indexName, indexMin + 1);
+        String filename1 = getChunkedIndexFilePathName(indexMin);
+        String filename2 = getChunkedIndexFilePathName(indexMin + 1);
         twoChunks.add(new File(filename1));
         twoChunks.add(new File(filename2));
         return twoChunks;
@@ -254,9 +252,9 @@ public class ServerLocal extends Server {
      * @return true iff the index has successfully be replaced.
      */
     @Override
-    public boolean updateIndexFile(File newIndexFile, String indexName) {
+    public boolean updateIndexFile(File newIndexFile) {
         new File(folderNameIndex).mkdirs();
-        String filename = getIndexFilePathName(indexName);
+        String filename = getIndexFilePathName();
         try {
             Files.copy(newIndexFile.toPath(),
                 (new File(filename)).toPath(),
@@ -275,8 +273,6 @@ public class ServerLocal extends Server {
      *
      * @param chunkedIndexFile, a chunk of the index that will added to the
      *        current ones.
-     * @param indexName, the String representing the compression scheme for the
-     *        index.
      * @param maxIdMail, the maximum index of the mail contained in the chunk.
      *        If set to -1, this is the result of two chunks currently on
      *        the server (in this case, replace them with the chunk), otherwise
@@ -284,12 +280,12 @@ public class ServerLocal extends Server {
      * @return true iff the chunked index has been successfully added.
      */
     @Override
-    public boolean addChunkedIndexFile(File chunkedIndexFile, String indexName, int maxIdMail) {
+    public boolean addChunkedIndexFile(File chunkedIndexFile, int maxIdMail) {
         if (maxIdMail == NOT_A_NEW_CHUNK) {
             // This is a chunk coming from the merge of two chunks we already have.
             new File(folderNameIndex).mkdirs();
             // Get the two consecutive chunks with minimum file size.
-            int indexMin = getIndexFirstOfTwoChunks(indexName);
+            int indexMin = getIndexFirstOfTwoChunks();
             if (indexMin == -1) {
                 return false;
             }
@@ -298,9 +294,9 @@ public class ServerLocal extends Server {
             try {
                 // Renaming all the chunks with greater id 2 ids before.
                 for (int i = indexMin + 2; i < nbIndexChunks; i++) {
-                    String filenameChunk = getChunkedIndexFilePathName(indexName, i);
+                    String filenameChunk = getChunkedIndexFilePathName(i);
                     source = Paths.get(filenameChunk);
-                    String filenameChunkBefore = getChunkedIndexFileName(indexName, i - 2);
+                    String filenameChunkBefore = getChunkedIndexFileName(i - 2);
                     Files.move(source, source.resolveSibling(filenameChunkBefore), StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (IOException e) {
@@ -309,7 +305,7 @@ public class ServerLocal extends Server {
                 return false;
             }
             // Remove the last chunk and replace the before-last chunk with the one given.
-            String filename = getChunkedIndexFilePathName(indexName, nbIndexChunks - 2);
+            String filename = getChunkedIndexFilePathName(nbIndexChunks - 2);
             try {
                 Files.copy(chunkedIndexFile.toPath(),
                     (new File(filename)).toPath(),
@@ -319,7 +315,7 @@ public class ServerLocal extends Server {
                 e.printStackTrace();
                 return false;
             }
-            new File(getChunkedIndexFilePathName(indexName, nbIndexChunks - 1)).delete();
+            new File(getChunkedIndexFilePathName(nbIndexChunks - 1)).delete();
             nbIndexChunks--;
             return true;
         } else {
@@ -327,14 +323,14 @@ public class ServerLocal extends Server {
             if (maxIdMail <= maxIdIndexedMail) {
                 // The user has started re-indexing everything from scratch.
                 for (int i = 0; i < nbIndexChunks; i++) {
-                    new File(getChunkedIndexFilePathName(indexName, i)).delete();
+                    new File(getChunkedIndexFilePathName(i)).delete();
                 }
                 nbIndexChunks = 0;
             }
             maxIdIndexedMail = maxIdMail;
             new File(folderNameIndex).mkdirs();
             String filename = folderNameIndex + File.separatorChar +
-                    fileNameIndex + indexName + "_chunk" + nbIndexChunks + "." + fileExtension;
+                    getChunkedIndexFileName(nbIndexChunks);
             try {
                 Files.copy(chunkedIndexFile.toPath(),
                     (new File(filename)).toPath(),
@@ -358,15 +354,13 @@ public class ServerLocal extends Server {
      * The chunks have all been merged to the last chunk on the server.
      * Set the index to this last chunk.
      *
-     * @param indexName, the String representing the compression scheme for the
-     * index.
      * @return true iff the index has successfully be replaced.
      */
     @Override
-    public boolean replaceIndexWithLastChunk(String indexName) {
+    public boolean replaceIndexWithLastChunk() {
         new File(folderNameIndex).mkdirs();
-        String filename = getIndexFileName(indexName);
-        String filepathnameChunk = getChunkedIndexFilePathName(indexName, 0);
+        String filename = getIndexFileName();
+        String filepathnameChunk = getChunkedIndexFilePathName(0);
         if (nbIndexChunks > 1) {
             return false;
         } else try {
