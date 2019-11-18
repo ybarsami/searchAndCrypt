@@ -51,13 +51,11 @@ public class ClientTest {
     public void testExportToFile() {
         System.out.println("exportToFile");
         Server server;
-        String indexType;
         Client instance;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
-        indexType = "delta";
-        instance = new Client(server, indexType, 10000);
-//        instance.exportToFile(indexType);
+        instance = new Client(server);
+//        instance.exportToFile();
     }
 
     /**
@@ -67,32 +65,28 @@ public class ClientTest {
     public void testExportToChunk() {
         System.out.println("exportToChunk");
         Server server;
-        String indexType;
         Client instance;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
-        indexType = "delta";
-        instance = new Client(server, indexType, 10000);
-//        instance.exportToChunk(indexType);
+        instance = new Client(server);
+//        instance.exportToChunk();
     }
 
     /**
-     * Test of indexEverything method, of class Client.
+     * Test of updateIndex method, of class Client.
      */
     @Test
-    public void testIndexEverything() {
-        System.out.println("indexEverything");
+    public void testUpdateIndex() {
+        System.out.println("updateIndex");
         Server server;
-        String indexType;
         Client instance;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
-        indexType = "delta";
-        instance = new Client(server, indexType, 10000);
-        instance.indexEverything(server, indexType);
-        File indexFile = server.getIndexFile(indexType);
+        instance = new Client(server);
+        instance.updateIndex();
+        File indexFile = server.getIndexFile();
         GlobalIndex globalIndex = new GlobalIndex();
-        globalIndex.importFromFile(indexFile, indexType);
+        globalIndex.importFromFile(indexFile);
         File result = globalIndex.exportToFileASCII("test_ASCII.txt");
         File expResult = new File("test" + File.separatorChar + "allen-p_ASCII.txt");
         try {
@@ -117,13 +111,11 @@ public class ClientTest {
     public void testLoadIndex() {
         System.out.println("loadIndex");
         Server server;
-        String indexType;
         Client instance;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
-        indexType = "delta";
-        instance = new Client(server, indexType, 10000);
-//        instance.loadIndex(indexType);
+        instance = new Client(server);
+//        instance.loadIndex();
     }
 
     /**
@@ -134,44 +126,42 @@ public class ClientTest {
         System.out.println("search");
         String requestedString, absoluteFolderName;
         Server server;
-        String indexType;
         Client instance;
         List<File> expResult, result;
         // allen-p dataset
         server = new ServerLocal(ServerLocal.MAILS_TEST1);
-        indexType = "delta";
-        instance = new Client(server, indexType, 10000);
-        File indexFile = server.getIndexFile(indexType);
+        instance = new Client(server);
+        File indexFile = server.getIndexFile();
         if (!indexFile.exists()) {
-            instance.indexEverything(server, indexType);
+            instance.updateIndex();
         }
         absoluteFolderName = new File(ServerLocal.MAILS_TEST1.getFolderName()).getAbsolutePath();
         requestedString = "diminish";
         expResult = new ArrayList<>();
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "548."));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "548"));
         result = instance.search(requestedString);
         assertEquals(expResult, result);
         requestedString = "hello";
         expResult = new ArrayList<>();
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "114."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "133."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "147."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "169."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "266."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "268."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "381."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "43."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "446."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "71."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "46."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "47."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "42."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "65."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "67."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "71."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent" + File.separatorChar + "766."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent" + File.separatorChar + "767."));
-        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent_items" + File.separatorChar + "199."));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "114"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "133"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "147"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "169"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "266"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "268"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "381"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "43"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "446"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "deleted_items" + File.separatorChar + "71"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "46"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "discussion_threads" + File.separatorChar + "47"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "42"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "65"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "67"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "71"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent" + File.separatorChar + "766"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent" + File.separatorChar + "767"));
+        expResult.add(new File(absoluteFolderName + File.separatorChar + "sent_items" + File.separatorChar + "199"));
         result = instance.search(requestedString);
         assertEquals(expResult, result);
     }

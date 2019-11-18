@@ -40,7 +40,7 @@ public class MimeParserTest {
     public void testParseMimeMessage() {
         System.out.println("parseMimeMessage");
         String absoluteFolderName = new File(ServerLocal.MAILS_TEST1.getFolderName()).getAbsolutePath();
-        File file = new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "25.");
+        File file = new File(absoluteFolderName + File.separatorChar + "inbox" + File.separatorChar + "25");
         String expResult = "Thu Oct 25 21:04:35 CEST 2001\n" +
                 "renee.ratcliff@enron.com\n" +
                 "k..allen@enron.com\n" +

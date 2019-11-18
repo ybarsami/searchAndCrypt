@@ -95,7 +95,7 @@ public class ServerLocal extends Server {
      * Creates a new instance of ServerLocal.
      */
     public ServerLocal(MailSet mailsType) {
-        fileNameIndex = "test_";
+        fileNameIndex = "test_index";
         fileExtension = "txt";
         nbIndexChunks = 0;
         maxIdIndexedMail = 0;
@@ -122,7 +122,7 @@ public class ServerLocal extends Server {
     /*
      * 
      */
-    private final void loadMails(MailSet mailsType) {
+    private void loadMails(MailSet mailsType) {
         folderNameMails = mailsType.getFolderName();
         folderNameIndex   = mailsType.getName() + "_test";
         fileNameBijection = mailsType.getName() + "_bijection.txt";
