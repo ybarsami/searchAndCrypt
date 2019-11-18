@@ -17,8 +17,8 @@ import java.util.TreeSet;
  */
 public class Client {
     
-    private final Server server;
-    private final Request request;
+    private Server server;
+    private Request request;
     private GlobalIndex globalIndex;
     private StringAnalyzer stringAnalyzer;
     
@@ -64,6 +64,7 @@ public class Client {
     public final void setLanguage(String language) {
         if (server.setLanguage(language)) {
             stringAnalyzer = new StringAnalyzer(language);
+            request = new Request(server, stringAnalyzer);
             updateIndex(true);
         }
     }
