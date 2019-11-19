@@ -54,8 +54,8 @@ public class MethodInterpolative extends MethodByBitSequence {
     @Override
     public final BitSequence bitSequenceOfMailList(ArrayIntList mailList) {
         int nbMailsLocal = mailList.size();
-        for (int i = 0; i < nbMailsLocal - 1; i++) {
-            assert(mailList.get(i) < mailList.get(i+1));
+        for (int i = 1; i < nbMailsLocal; i++) {
+            assert(mailList.get(i) > mailList.get(i - 1));
         }
         assert(mailList.get(nbMailsLocal - 1) <= this.nbMails);
         BitSequence buffer = new BitSequence();

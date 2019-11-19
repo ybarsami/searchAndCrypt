@@ -71,7 +71,7 @@ public class BitSequence {
             for (int j = 0; j < nbBitsPerByte; j++) {
                 bits[j] = bitSet.get(i *nbBitsPerByte + j) ? 1 : 0;
             }
-            bytes[i] |= bitArrayToByte(bits);
+            bytes[i] |= bitArray2byte(bits);
         }
         return bytes;
     }

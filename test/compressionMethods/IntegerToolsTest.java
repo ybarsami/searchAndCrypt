@@ -33,42 +33,42 @@ public class IntegerToolsTest {
     }
     
     /**
-     * Test of byteToBitArray method, of class IntegerTools.
+     * Test of byte2bitArray method, of class IntegerTools.
      */
     @Test
-    public void testByteToBitArray() {
-        System.out.println("byteToBitArray");
+    public void testByte2bitArray() {
+        System.out.println("byte2bitArray");
         byte b;
         int[] expResult, result;
         // 0_{10} = 00000000_2.
         b = 0;
         expResult = new int[IntegerTools.nbBitsPerByte];
-        result = IntegerTools.byteToBitArray(b);
+        result = IntegerTools.byte2bitArray(b);
         assertArrayEquals(expResult, result);
         // 242_{10} = 11110010_2.
         b = (byte)242;
         expResult = new int[] {1, 1, 1, 1, 0, 0, 1, 0};
-        result = IntegerTools.byteToBitArray(b);
+        result = IntegerTools.byte2bitArray(b);
         assertArrayEquals(expResult, result);
     }
     
     /**
-     * Test of bitArrayToByte method, of class IntegerTools.
+     * Test of bitArray2byte method, of class IntegerTools.
      */
     @Test
-    public void testBitArrayToByte() {
-        System.out.println("bitArrayToByte");
+    public void testBitArray2byte() {
+        System.out.println("bitArray2byte");
         int[] bitArray;
         byte expResult, result;
         // [0, 0, 0, 0, 0, 0, 0, 0] leads to 0.
         bitArray = new int[IntegerTools.nbBitsPerByte];
         expResult = 0;
-        result = IntegerTools.bitArrayToByte(bitArray);
+        result = IntegerTools.bitArray2byte(bitArray);
         assertEquals(expResult, result);
         // [0] is undefined
         bitArray = new int[3];
         try {
-            result = IntegerTools.bitArrayToByte(bitArray);
+            result = IntegerTools.bitArray2byte(bitArray);
             fail("This should not be executed.");
         } catch(AssertionError e) {}
     }

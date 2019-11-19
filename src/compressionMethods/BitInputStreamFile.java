@@ -52,7 +52,7 @@ public class BitInputStreamFile extends BitInputStream {
         if (nbCurrentBitsRead == nbBitsPerByte) {
             try {
                 nbCurrentBitsRead = 0;
-                currentBits = byteToBitArray(dataInputStream.readByte());
+                currentBits = byte2bitArray(dataInputStream.readByte());
             } catch (IOException e) {
                 throw new IndexOutOfBoundsException();
             }

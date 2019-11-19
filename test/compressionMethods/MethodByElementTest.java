@@ -40,19 +40,32 @@ public class MethodByElementTest {
     public void testGapList() {
         System.out.println("gapList");
         int[] expResult, result;
-        ArrayIntList mailList = new ArrayIntList();
-        int[] mailArray = new int[] { 3, 8, 9, 11, 12, 13, 17 };
+        ArrayIntList mailList, gapList;
+        int[] mailArray;
+        // Generic sorted mail array
+        mailArray = new int[] { 3, 8, 9, 11, 12, 13, 17 };
+        mailList = new ArrayIntList();
         for (int i = 0; i < mailArray.length; i++) {
             mailList.add(mailArray[i]);
         }
         expResult = new int[] { 3, 5, 1, 2, 1, 1, 4 };
-        ArrayIntList gapList = MethodByElement.gapList(mailList);
+        gapList = MethodByElement.gapList(mailList);
         int nbGaps = gapList.size();
         result = new int[nbGaps];
         for (int i = 0; i < nbGaps; i++) {
             result[i] = gapList.get(i);
         }
         assertArrayEquals(expResult, result);
+        // Non-sorted mail array
+        mailArray = new int[] { 3, 8, 9, 12, 13, 17, 11 };
+        mailList = new ArrayIntList();
+        for (int i = 0; i < mailArray.length; i++) {
+            mailList.add(mailArray[i]);
+        }
+        try {
+            gapList = MethodByElement.gapList(mailList);
+            fail("This should not be executed.");
+        } catch(AssertionError e) {}
     }
     
 }

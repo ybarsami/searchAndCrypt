@@ -165,8 +165,7 @@ public class MethodUnaryTest {
             mailListInput.add(expResult[i]);
         }
         BitSequence bitSequence = instance.bitSequenceOfMailList(mailListInput);
-        BitInputStreamArray bitInputStream = new BitInputStreamArray(bitSequence);
-        ArrayIntList mailListOutput = instance.readMailList(bitInputStream, nbMailsInput);
+        ArrayIntList mailListOutput = instance.readMailList(bitSequence, nbMailsInput);
         int nbMailsOutput = mailListOutput.size();
         int[] result = new int[nbMailsOutput];
         for (int i = 0; i < nbMailsOutput; i++) {

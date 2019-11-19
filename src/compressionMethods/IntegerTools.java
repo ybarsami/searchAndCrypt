@@ -18,7 +18,7 @@ public class IntegerTools {
      * This function uses a big endian or little endian representation of the
      * byte, depending on the value of the boolean isBigEndian.
      */
-    public static int[] byteToBitArray(byte b) {
+    public static int[] byte2bitArray(byte b) {
         int[] bitArray = new int[nbBitsPerByte];
         int myByte = byte2int(b);
         for (int i = 0; i < nbBitsPerByte; i++) {
@@ -33,7 +33,7 @@ public class IntegerTools {
      * This function uses a big endian or little endian representation of the
      * byte, depending on the value of the boolean isBigEndian.
      */
-    public static byte bitArrayToByte(int[] bitArray) {
+    public static byte bitArray2byte(int[] bitArray) {
         assert(bitArray.length == nbBitsPerByte);
         byte b = 0;
         for (int i = 0; i < nbBitsPerByte; i++) {

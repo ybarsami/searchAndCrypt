@@ -14,9 +14,13 @@ import org.apache.commons.collections.primitives.ArrayIntList;
 public abstract class MethodByElement extends MethodByBitSequence {
     
     public static ArrayIntList gapList(ArrayIntList mailList) {
+        int nbMailsLocal = mailList.size();
+        for (int i = 1; i < nbMailsLocal; i++) {
+            assert(mailList.get(i) > mailList.get(i - 1));
+        }
         ArrayIntList gapList = new ArrayIntList();
         gapList.add(mailList.get(0));
-        for (int i = 1; i < mailList.size(); i++) {
+        for (int i = 1; i < nbMailsLocal; i++) {
             gapList.add(mailList.get(i) - mailList.get(i - 1));
         }
         return gapList;
