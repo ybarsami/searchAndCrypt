@@ -95,7 +95,7 @@ public class ClientTest {
 
             // Compute diff. Get the Patch object. Patch is the container for computed deltas.
             Patch<String> patch = DiffUtils.diff(original, revised);
-            assertEquals(patch.getDeltas().size(), 0);
+            assertEquals(0, patch.getDeltas().size());
         } catch (IOException e) {
             fail("IOException when testing.");
         } catch (DiffException e) {

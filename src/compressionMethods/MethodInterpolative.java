@@ -1,5 +1,7 @@
 /**
  * Index compression with the interpolative method.
+ * We here use only the algorithm from Section 3, without the refinements
+ * presented in Sections 4 and 6.
  *
  * Moffat and Stuiver, "Exploiting Clustering in Inverted File Compression" (1996), p. 5
  * The process of calculating ranges and codes is captured by the following

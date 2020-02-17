@@ -67,7 +67,7 @@ public class MethodBinaryTest {
             instance.writeCode(x, buffer);
             fail("This should not be executed.");
         } catch(AssertionError e) {}
-        // Trying to write 5
+        // Trying to write 5 (not possible on ceiling(log_2(4)) = 2 bits)
         x = 5;
         buffer = new BitSequence();
         try {
@@ -127,7 +127,7 @@ public class MethodBinaryTest {
             MethodBinary.writeCodeBinary(x, buffer, nbBitsToWrite);
             fail("This should not be executed.");
         } catch(AssertionError e) {}
-        // Trying to write 4
+        // Trying to write 4 (not possible on 2 bits)
         x = 4;
         buffer = new BitSequence();
         try {

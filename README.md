@@ -175,6 +175,8 @@ contains those 2 words.
   (http://members.unine.ch/jacques.savoy/clef/) or the one of Paice/Husk
   (http://alx2002.free.fr/utilitarism/stemmer/stemmer_fr.html).
 
+* the Java Diff Utils library [[17]](#note17) for unit tests.
+
 
 ## Building the inverted index: choices made in this library ##
 
@@ -338,4 +340,6 @@ is the compression method.
 <a name="note15">\[15\]</a> Jonathan Hedley. jsoup: Java HTML Parser. 2004. https://jsoup.org/
 
 <a name="note16">\[16\]</a> M. Porter and R. Boulton. Snowball. 2002. http://snowballstem.org/
+
+<a name="note17">\[17\]</a> wumpz. Java Diff Utils. 2017. https://github.com/java-diff-utils/java-diff-utils
 
